@@ -1,7 +1,10 @@
-const { app, BrowserWindow, ipcMain, dialog, protocol } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require("path");
 const fs = require('fs');
+const initDatabase = require("./database");
 //const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
+
+initDatabase.initDatabase();
 
 const PLATFORMS = {
 	MACOS: 'darwin',
@@ -22,6 +25,10 @@ async function handleFileOpen() {
 			absolute: directory[3],
 		}
 	}
+}
+
+async function handleGetFolders() {
+	return initDatabase.getFolders();
 }
 
 function getDirectories(srcpath) {
@@ -66,7 +73,8 @@ app.on("ready", () => {
 	//installExtension(REACT_DEVELOPER_TOOLS, {loadExtensionOptions: {allowFileAccess: true}})
 	//	.then((name) => console.log(`Added Extension: ${name}`))
 	//	.catch((err) => console.log('An error occurred: ', err));
-	ipcMain.handle('dialog:openFile', handleFileOpen)
+	ipcMain.handle('dialog:openFile', handleFileOpen);
+	ipcMain.handle('database:getFolders', handleGetFolders);
 	createWindow();
 });
 
