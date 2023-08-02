@@ -3,19 +3,30 @@ const sql = require("sqlite3");
 const path = require("path");
 
 sqlbuilder.setDialect('sqlite');
+//var folderQB = sqlbuilder.define({
+//	name: 'folder',
+//	columns: ['id', 'path', 'parent'],
+//});
+//var fileQB = sqlbuilder.define({
+//	name: 'file',
+//	columns: ['id', 'path', 'parent'],
+//});
+//var tagQB = sqlbuilder.define({
+//	name: 'tag',
+//	columns: ['id', 'name'],
+//});
+//var fileTagQB = sqlbuilder.define({
+//	name: 'fileTagRelation',
+//	columns: ['file', 'tag'],
+//});
 
 function initDatabase() {
 	const db = new sql.Database(path.resolve(__dirname, 'db/configs.sqlite'), (err) => {
 		if (err) {
 			console.log(err.message);
 		}
-		console.log('Connected to database');
 	});
 	db.serialize(() => {
-		var folder = sqlbuilder.define({
-			name: 'folder',
-			columns: ['id', 'path', 'parent'],
-		});
 		db.run(`DROP TABLE IF EXISTS folder`).run(`
 			CREATE TABLE folder (
 				id INTEGER PRIMARY KEY,
@@ -27,10 +38,6 @@ function initDatabase() {
 						ON UPDATE NO ACTION
 			)
 		`)
-		var file = sqlbuilder.define({
-			name: 'file',
-			columns: ['id', 'path', 'parent'],
-		});
 		db.run(`DROP TABLE IF EXISTS file`).run(`
 			CREATE TABLE file (
 				id INTEGER PRIMARY KEY,
@@ -42,20 +49,12 @@ function initDatabase() {
 						ON UPDATE NO ACTION
 			)
 		`)
-		var tag = sqlbuilder.define({
-			name: 'tag',
-			columns: ['id', 'name'],
-		});
 		db.run(`DROP TABLE IF EXISTS tag`).run(`
 			CREATE TABLE tag(
 				id INTEGER PRIMARY KEY,
 				name TEXT NOT NULL
 			)
 		`)
-		var fileTagRelation = sqlbuilder.define({
-			name: 'fileTagRelation',
-			columns: ['file', 'tag'],
-		});
 		db.run(`DROP TABLE IF EXISTS fileTagRelation`).run(`
 			CREATE TABLE fileTagRelation (
 				file INTEGER,
@@ -110,32 +109,56 @@ function getFolders() {
 		if (err) {
 			console.log(err.message);
 		}
-		console.log('Connected to database');
 	});
-	db.serialize(() => {
+		var folders = [];
+		var files = [];
 		let query = `SELECT * FROM folder`;
 		db.all(query, [], (err, rows) => {
 			if (err) throw err;
-			let folders = [];
 			rows.forEach((row) => {
 				folders.push(row);
 			});
-			return buildFolderStructure(folders);
 		});
-	});
+		query = `SELECT f.path, f.parent, group_concat(t.name) as tags
+			FROM file f
+			INNER JOIN fileTagRelation ftr ON f.id = ftr.file
+			INNER JOIN tag t ON t.id = ftr.tag
+			GROUP BY f.id`;
+		db.all(query, [], (err, rows) => {
+			if (err) throw err;
+			rows.forEach((row) => {
+			files.push(row);
+			});
+			files = buildFiles(files);
+			return buildFolderStructure(folders, files);
+		});
 	db.close();
 }
 
-function buildFolderStructure(folderlist) {
-	function addToFolder(fk, list) {
-		let l = list.filter(x => x.parent === fk)
-			.map(x => { return { id: x.id, path: x.path, parent: x.parent, folders: x.folders}});
-		return l;
+function buildFiles(files) {
+	return files.map((file) => {
+		file.tags = file.tags.split(',').map((tag) => {return {name: tag}});
+		return file;
+	});
+}
+
+function buildFolderStructure(folderlist, filelist) {
+	console.log(folderlist, filelist);
+	function addToFolderRecursive(parent, folders) {
+		return folders.filter((folder) => folder.parent === parent).map((newFolder) => {
+			newFolder = {
+				id: newFolder.id,
+				path: newFolder.path,
+				parent: newFolder.parent,
+				folders: addToFolderRecursive(newFolder.id, folderlist),
+				files: addFilesToFolder(newFolder.id, filelist),
+			}
+			return newFolder
+		})
 	}
 
-	function getAllSubfolders(parent, allFolders) {
-		console.log(parent);
-		console.log(allFolders.filter(folder => folder[2] === parent))
+	function addFilesToFolder(folder, files) {
+		return files.filter((file) => file.parent === folder);
 	}
 
 	const hierarchyList = [];
@@ -145,12 +168,12 @@ function buildFolderStructure(folderlist) {
 				id: x.id,
 				path: x.path,
 				parent: x.parent,
-				folders: addToFolder(x.id, folderlist),
-				//files: [],
+				folders: addToFolderRecursive(x.id, folderlist),
+				files: addFilesToFolder(x.id, filelist),
 			});
 		}
 	});
-	return hierarchyList[0];
+	return hierarchyList;
 }
 
 module.exports = { initDatabase, getFolders };

@@ -38,12 +38,9 @@ const initFolders = new Folder('')
 );
 
 function App() {
-	async function test() {await window.myAPI.getFolders()}
-	test().then(result => console.log(result))
-
 	const [file, setFile] = useState({name:"", tags:[]});
 	const [currentPath, setCurrentPath] = useState([]);
-	const [folderStructure, setCurrentFolderStructure ] = useState(initFolders);
+	const [folderStructure, setCurrentFolderStructure ] = useState(window.myAPI.getFolders());
 
 	function handleFileChange(file) {
 		setFile(file);
