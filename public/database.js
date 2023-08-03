@@ -1,8 +1,10 @@
-const sqlbuilder = require("sql");
+//const sqlbuilder = require("sql");
 const sql = require("sqlite3");
 const path = require("path");
 
-sqlbuilder.setDialect('sqlite');
+const { Folder } = require("../src/Modules/Folder");
+
+//sqlbuilder.setDialect('sqlite');
 //var folderQB = sqlbuilder.define({
 //	name: 'folder',
 //	columns: ['id', 'path', 'parent'],
@@ -30,7 +32,7 @@ function initDatabase() {
 		db.run(`DROP TABLE IF EXISTS folder`).run(`
 			CREATE TABLE folder (
 				id INTEGER PRIMARY KEY,
-				path TEXT NOT NULL,
+				name TEXT NOT NULL,
 				parent INTEGER,
 				FOREIGN KEY (parent)
 					REFERENCES folder (id)
@@ -41,7 +43,7 @@ function initDatabase() {
 		db.run(`DROP TABLE IF EXISTS file`).run(`
 			CREATE TABLE file (
 				id INTEGER PRIMARY KEY,
-				path TEXT NOT NULL,
+				name TEXT NOT NULL,
 				parent INTEGER,
 				FOREIGN KEY (parent)
 					REFERENCES folder (id)
@@ -74,18 +76,18 @@ function initDatabase() {
 		//disable in production
 		populateDatabase(db);
 		db.close();
-	})
+	});
 }
 
 function populateDatabase(db) {
 	//Folder
-	const folderStmt = db.prepare("INSERT INTO folder(path, parent) VALUES (?,?)");
+	const folderStmt = db.prepare("INSERT INTO folder(name, parent) VALUES (?,?)");
 	[['Japan', null], ['folder', 1], ['to_deep', 2], ['nothing', 3], ['whatever', 2]].forEach(element => {
 		folderStmt.run([element[0], element[1]]);
 	});
 	folderStmt.finalize();
 	//Files
-	const fileStmt = db.prepare("INSERT INTO file(path, parent) VALUES (?,?)");
+	const fileStmt = db.prepare("INSERT INTO file(name, parent) VALUES (?,?)");
 	[['cute.png',1],['spoopy.png',2]].forEach(file => {
 		fileStmt.run([file[0], file[1]]);
 	});
@@ -110,29 +112,28 @@ function getFolders() {
 			console.log(err.message);
 		}
 	});
-		var folders = [];
-		var files = [];
-		let query = `SELECT * FROM folder`;
-		db.all(query, [], (err, rows) => {
-			if (err) throw err;
-			rows.forEach((row) => {
-				folders.push(row);
+	return new Promise((resolve, reject) => {
+		db.serialize(() => {
+			var folders = [];
+			var files = [];
+			let query = `SELECT * FROM folder`;
+			let stmt = db.prepare(query);
+			stmt.all((err, rows) => {
+				folders = rows
+			});
+			query = `SELECT f.name, f.parent, group_concat(t.name) as tags
+				FROM file f
+				INNER JOIN fileTagRelation ftr ON f.id = ftr.file
+				INNER JOIN tag t ON t.id = ftr.tag
+				GROUP BY f.id`;
+			stmt = db.prepare(query);
+			stmt.all((err, rows) => {
+				files = buildFiles(rows);
+				resolve(buildFolderStructure(folders, files));
 			});
 		});
-		query = `SELECT f.path, f.parent, group_concat(t.name) as tags
-			FROM file f
-			INNER JOIN fileTagRelation ftr ON f.id = ftr.file
-			INNER JOIN tag t ON t.id = ftr.tag
-			GROUP BY f.id`;
-		db.all(query, [], (err, rows) => {
-			if (err) throw err;
-			rows.forEach((row) => {
-			files.push(row);
-			});
-			files = buildFiles(files);
-			return buildFolderStructure(folders, files);
-		});
-	db.close();
+		//db.close();
+	});
 }
 
 function buildFiles(files) {
@@ -143,17 +144,17 @@ function buildFiles(files) {
 }
 
 function buildFolderStructure(folderlist, filelist) {
-	console.log(folderlist, filelist);
+	//console.log(folderlist, filelist);
 	function addToFolderRecursive(parent, folders) {
 		return folders.filter((folder) => folder.parent === parent).map((newFolder) => {
 			newFolder = {
 				id: newFolder.id,
-				path: newFolder.path,
+				name: newFolder.name,
 				parent: newFolder.parent,
 				folders: addToFolderRecursive(newFolder.id, folderlist),
 				files: addFilesToFolder(newFolder.id, filelist),
 			}
-			return newFolder
+			return newFolder;
 		})
 	}
 
@@ -166,7 +167,7 @@ function buildFolderStructure(folderlist, filelist) {
 		if (!x.parent) {
 			hierarchyList.push({
 				id: x.id,
-				path: x.path,
+				name: x.name,
 				parent: x.parent,
 				folders: addToFolderRecursive(x.id, folderlist),
 				files: addFilesToFolder(x.id, filelist),

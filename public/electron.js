@@ -3,6 +3,7 @@ const path = require("path");
 const fs = require('fs');
 const initDatabase = require("./database");
 //const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
+const { handleFileOpen, handleGetFolders} = require('../src/Modules/DataHandler');
 
 initDatabase.initDatabase();
 
@@ -10,42 +11,6 @@ const PLATFORMS = {
 	MACOS: 'darwin',
 	WINDOWS: 'win',
 	LINUX: 'linux',
-}
-
-async function handleFileOpen() {
-	const { canceled, filePaths } = await dialog.showOpenDialog({
-		properties: ['openDirectory'],
-	});
-	if (!canceled) {
-		const directory = getDirectoriesRecursive(filePaths[0]);
-		return {
-			parent: filePaths[0].split(path.sep).pop(),
-			folders: directory[1],//directory.filter(dirent => dirent.isDirectory()).map(dirent => dirent.name),
-			files: directory[2],//directory.filter(dirent => dirent.isFile()).map(dirent => dirent.name),
-			absolute: directory[3],
-		}
-	}
-}
-
-async function handleGetFolders() {
-	return initDatabase.getFolders();
-}
-
-function getDirectories(srcpath) {
-	return fs.readdirSync(srcpath, { withFileTypes:true })
-		.map(dirent => path.join(srcpath, dirent.name))
-		.filter(path => fs.statSync(path).isDirectory());
-}
-
-function getFiles(srcpath) {
-	return fs.readdirSync(srcpath)
-		//.map(dirent => path.join(srcpath, dirent.name))
-		.filter(dirent => fs.statSync(path.join(srcpath, dirent)).isFile());
-}
-
-function getDirectoriesRecursive(srcpath) {
-	let splitPath = srcpath.split(path.sep);
-	return [splitPath[splitPath.length-1], getDirectories(srcpath).map(getDirectoriesRecursive), getFiles(srcpath), srcpath];
 }
 
 function createWindow() {

@@ -15,7 +15,7 @@ body {
 		"sidebar footer footer";
 	height: 100vh;
 	grid-template-rows: 2rem 1fr 2rem;
-	grid-template-columns: 200px 1fr 200px;
+	grid-template-columns: 200px 1fr 400px;
 }
 
 #header {
@@ -46,8 +46,8 @@ body {
 }
 
 #details #details-image {
-	max-width: 100px;
-	max-height: 100px;
+	max-width: 300px;
+	max-height: 400px;
 	width: auto;
 	height: auto;
 }
