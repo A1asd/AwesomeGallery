@@ -29,8 +29,22 @@ function initDatabase() {
 		}
 	});
 	db.serialize(() => {
-		db.run(`DROP TABLE IF EXISTS folder`).run(`
-			CREATE TABLE folder (
+		//db.run(`DROP TABLE IF EXISTS folder`).run(`
+		db.run(`
+			CREATE TABLE IF NOT EXISTS folder (
+				id INTEGER PRIMARY KEY,
+				name TEXT NOT NULL,
+				path TEXT,
+				parent INTEGER,
+				FOREIGN KEY (parent)
+					REFERENCES folder (id)
+						ON DELETE CASCADE
+						ON UPDATE NO ACTION
+			)
+		`)
+		//db.run(`DROP TABLE IF EXISTS file`).run(`
+		db.run(`
+			CREATE TABLE IF NOT EXISTS file (
 				id INTEGER PRIMARY KEY,
 				name TEXT NOT NULL,
 				parent INTEGER,
@@ -40,27 +54,11 @@ function initDatabase() {
 						ON UPDATE NO ACTION
 			)
 		`)
-		db.run(`DROP TABLE IF EXISTS file`).run(`
-			CREATE TABLE file (
-				id INTEGER PRIMARY KEY,
-				name TEXT NOT NULL,
-				parent INTEGER,
-				FOREIGN KEY (parent)
-					REFERENCES folder (id)
-						ON DELETE CASCADE
-						ON UPDATE NO ACTION
-			)
-		`)
-		db.run(`DROP TABLE IF EXISTS tag`).run(`
-			CREATE TABLE tag(
-				id INTEGER PRIMARY KEY,
-				name TEXT NOT NULL
-			)
-		`)
-		db.run(`DROP TABLE IF EXISTS fileTagRelation`).run(`
-			CREATE TABLE fileTagRelation (
-				file INTEGER,
-				tag INTEGER,
+		//db.run(`DROP TABLE IF EXISTS fileTagRelation`).run(`
+		db.run(`
+			CREATE TABLE IF NOT EXISTS fileTagRelation (
+				file INTEGER NOT NULL,
+				tag TEXT NOT NULL,
 				PRIMARY KEY (file, tag),
 				FOREIGN KEY (file)
 					REFERENCES file (id)
@@ -81,29 +79,82 @@ function initDatabase() {
 
 function populateDatabase(db) {
 	//Folder
-	const folderStmt = db.prepare("INSERT INTO folder(name, parent) VALUES (?,?)");
-	[['Japan', null], ['folder', 1], ['to_deep', 2], ['nothing', 3], ['whatever', 2]].forEach(element => {
-		folderStmt.run([element[0], element[1]]);
-	});
-	folderStmt.finalize();
-	//Files
-	const fileStmt = db.prepare("INSERT INTO file(name, parent) VALUES (?,?)");
-	[['cute.png',1],['spoopy.png',2]].forEach(file => {
-		fileStmt.run([file[0], file[1]]);
-	});
-	fileStmt.finalize();
-	//Tags
-	const tagStmt = db.prepare("INSERT INTO tag(name) VALUES (?)");
-	['selfie', 'horror', 'cute'].forEach(tag => {
-		tagStmt.run(tag);
-	});
-	tagStmt.finalize();
+	//const folderStmt = db.prepare("INSERT INTO folder(name, parent) VALUES (?,?)");
+	//[['Japan', null], ['folder', 1], ['to_deep', 2], ['nothing', 3], ['whatever', 2]].forEach(element => {
+	//	folderStmt.run([element[0], element[1]]);
+	//});
+	//folderStmt.finalize();
+	////Files
+	//const fileStmt = db.prepare("INSERT INTO file(name, parent) VALUES (?,?)");
+	//[['cute.png',1],['spoopy.png',2]].forEach(file => {
+	//	fileStmt.run([file[0], file[1]]);
+	//});
+	//fileStmt.finalize();
 	//Tag File Relation
-	const fileTagStmt = db.prepare("INSERT INTO fileTagRelation(file, tag) VALUES (?,?)");
-	[[1,1],[1,3],[2,1],[2,2]].forEach(relation => {
-		fileTagStmt.run([relation[0], relation[1]]);
+	//const fileTagStmt = db.prepare("INSERT INTO fileTagRelation(file, tag) VALUES (?,?)");
+	//[[1,1],[1,3],[2,1],[2,2]].forEach(relation => {
+	//	fileTagStmt.run([relation[0], relation[1]]);
+	//});
+	//fileTagStmt.finalize();
+}
+
+function saveFolder(folder, parent = null) {
+	const db = new sql.Database(path.resolve(__dirname, 'db/configs.sqlite'), (err) => {
+		if (err) {
+			console.log(err.message);
+		}
 	});
-	fileTagStmt.finalize();
+
+	const saveFolderStmt = db.prepare("INSERT INTO folder(name, path, parent) VALUES (?,?,?)");
+	db.serialize(() => {
+		saveFolderStmt.run([folder.name, folder.path, parent], function (err) {
+			folder.files.forEach((file) => {
+				const saveFileStmt = db.prepare("INSERT INTO file(name, parent) VALUES (?,?)");
+				file.tags.map((tag) => {return {name: tag}});
+				saveFileStmt.run(file.name, this.lastID);
+				saveFileStmt.finalize();
+			});
+			folder.folders.forEach((folder) => saveFolder(folder, this.lastID));
+		});
+	});
+	saveFolderStmt.finalize();
+	db.close()
+}
+
+function getTags() {
+	const db = new sql.Database(path.resolve(__dirname, 'db/configs.sqlite'), (err) => {
+		if (err) {
+			console.log(err.message);
+		}
+	});
+	return new Promise((resolve, reject) => {
+		db.serialize(() => {
+			let query = `SELECT ftr.tag, count(*) as total
+			FROM fileTagRelation ftr
+			GROUP BY ftr.tag`;
+			let stmt = db.prepare(query);
+			stmt.all((err, rows) => {
+				/**
+				 * [ { tag: 'name', total: int}, ... ]
+				 */
+				resolve(rows)
+			});
+		});
+		//db.close();
+	});
+};
+
+function saveTag(tag, fileId) {
+	const db = new sql.Database(path.resolve(__dirname, 'db/configs.sqlite'), (err) => {
+		if (err) {
+			console.log(err.message);
+		}
+	});
+	console.log(tag, fileId);
+	const saveTagStmt = db.prepare("INSERT INTO fileTagRelation(tag, file) VALUES (?,?)");
+	saveTagStmt.run([tag, fileId]);
+	saveTagStmt.finalize();
+	db.close()
 }
 
 function getFolders() {
@@ -121,10 +172,10 @@ function getFolders() {
 			stmt.all((err, rows) => {
 				folders = rows
 			});
-			query = `SELECT f.name, f.parent, group_concat(t.name) as tags
+			query = `SELECT f.id, f.name, f.parent, folder.path, group_concat(ftr.tag) as tags
 				FROM file f
-				INNER JOIN fileTagRelation ftr ON f.id = ftr.file
-				INNER JOIN tag t ON t.id = ftr.tag
+				LEFT JOIN fileTagRelation ftr ON f.id = ftr.file
+				LEFT JOIN folder ON f.parent = folder.id
 				GROUP BY f.id`;
 			stmt = db.prepare(query);
 			stmt.all((err, rows) => {
@@ -138,7 +189,9 @@ function getFolders() {
 
 function buildFiles(files) {
 	return files.map((file) => {
-		file.tags = file.tags.split(',').map((tag) => {return {name: tag}});
+		console.log(file)
+		if (file.tags) file.tags = file.tags.split(',').map((tag) => {return {name: tag}});
+		else file.tags = [];
 		return file;
 	});
 }
@@ -150,6 +203,7 @@ function buildFolderStructure(folderlist, filelist) {
 			newFolder = {
 				id: newFolder.id,
 				name: newFolder.name,
+				path: newFolder.path,
 				parent: newFolder.parent,
 				folders: addToFolderRecursive(newFolder.id, folderlist),
 				files: addFilesToFolder(newFolder.id, filelist),
@@ -168,6 +222,7 @@ function buildFolderStructure(folderlist, filelist) {
 			hierarchyList.push({
 				id: x.id,
 				name: x.name,
+				path: x.path,
 				parent: x.parent,
 				folders: addToFolderRecursive(x.id, folderlist),
 				files: addFilesToFolder(x.id, filelist),
@@ -177,4 +232,4 @@ function buildFolderStructure(folderlist, filelist) {
 	return hierarchyList;
 }
 
-module.exports = { initDatabase, getFolders };
+module.exports = { initDatabase, getFolders, saveFolder, saveTag, getTags };

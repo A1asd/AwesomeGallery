@@ -3,7 +3,7 @@ const path = require("path");
 const fs = require('fs');
 const initDatabase = require("./database");
 //const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
-const { handleFileOpen, handleGetFolders} = require('../src/Modules/DataHandler');
+const { handleFileOpen, handleGetFolders, handleSaveTag, handleGetTags } = require('../src/Modules/DataHandler');
 
 initDatabase.initDatabase();
 
@@ -40,6 +40,11 @@ app.on("ready", () => {
 	//	.catch((err) => console.log('An error occurred: ', err));
 	ipcMain.handle('dialog:openFile', handleFileOpen);
 	ipcMain.handle('database:getFolders', handleGetFolders);
+	ipcMain.handle('database:getTags', handleGetTags);
+	ipcMain.handle('database:saveTag', (event, tag, fileId) => {
+		console.log(tag, fileId)
+		handleSaveTag(tag, fileId)
+	});
 	createWindow();
 });
 

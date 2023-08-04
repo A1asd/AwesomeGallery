@@ -11,20 +11,31 @@ async function handleFileOpen() {
 	});
 	if (!canceled) {
 		const directory = getDirectoriesRecursive(filePaths[0]);
-		let root = new Folder(
-			filePaths[0].split(path.sep).pop(),
-			directory.parent,
-			directory.folders,
-			directory.files
-		)
-		return root
+		//let root = new Folder(
+		//	filePaths[0].split(path.sep).pop(),
+		//	directory.path,
+		//	directory.parent,
+		//	directory.folders,
+		//	directory.files
+		//)
+		//console.log(root);
+		initDatabase.saveFolder(directory);
+		//console.log(root)
+		return initDatabase.getFolders();
 	}
 }
 
 async function handleGetFolders() {
 	let folders = initDatabase.getFolders();
-	console.log(folders);
 	return folders;
+}
+
+async function handleSaveTag(tag, fileId) {
+	initDatabase.saveTag(tag, fileId);
+}
+
+async function handleGetTags() {
+	return initDatabase.getTags();
 }
 
 function getDirectories(srcpath) {
@@ -45,9 +56,10 @@ function getDirectoriesRecursive(srcpath) {
 	return new Folder(
 		name,
 		srcpath,
+		srcpath,
 		getDirectories(srcpath).map(getDirectoriesRecursive),
 		getFiles(srcpath)
 	)
 }
 
-module.exports = { handleFileOpen, handleGetFolders};
+module.exports = { handleFileOpen, handleGetFolders, handleSaveTag, handleGetTags };

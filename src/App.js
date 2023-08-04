@@ -38,30 +38,30 @@ const initFolders = new Folder('')
 //);
 
 function App() {
-	const [file, setFile] = useState({name:"", tags:[]});
+	const [file, setFile] = useState({id: 0, name:"", tags:[]});
 	const [currentPath, setCurrentPath] = useState([]);
 	//const [initialFolders, setInitialFolders] = useState(new Folder(''));
 	const [folderStructure, setCurrentFolderStructure ] = useState(initFolders);
+
 	function handleFileChange(file) {
 		setFile(file);
 	}
 
+	const [tags, setTags] = useState([]);
 	//const [cont, setContent] = useState([]);
 	useEffect(() => {
 		const fetchData = async () => {
-			let response = await window.myAPI.getFolders();
-			//console.log(response[0]);
-			//console.log(initFolders.folders[0]);
-			//setContent(response);
+			let folders = await window.myAPI.getFolders();
 			folderStructure.addFolder({
-				name: response[0].name,
-				folders: response[0].folders,
-				files: response[0].files,
-				path: response[0].path,
+				name: folders[0].name || '',
+				folders: folders[0].folders,
+				files: folders[0].files,
+				path: folders[0].path,
 			});
+			setTags(await window.myAPI.getTags());
 		}
 		fetchData();
-	}, [folderStructure]);
+	}, [folderStructure, setTags]);
 
 	function handleCurrentPathChange(path) {
 		setCurrentPath(path);

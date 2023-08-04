@@ -1,7 +1,8 @@
 class Folder {
-	constructor(name, path, folders = [], files = []) {
+	constructor(name, path, parent, folders = [], files = []) {
 		this.name = name;
 		this.path = path;
+		this.parent = parent;
 		this.folders = folders;
 		this.files = files;
 		return this;
