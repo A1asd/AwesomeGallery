@@ -1,5 +1,6 @@
 const sql = require("sqlite3");
 const path = require("path");
+const fs = require('fs');
 const { FolderRepository } = require("../Repositories/FolderRepository");
 const { TagRepository } = require("../Repositories/TagRepository");
 const { FileRepository } = require("../Repositories/FileRepository");
@@ -10,6 +11,7 @@ const config = {
 };
 
 function initDatabase() {
+	if (config.preloadDatabase) fs.unlinkSync("data/database.sqlite");
 	const db = new sql.Database(path.resolve(__dirname, config.databasePath), (err) => {
 		if (err) {
 			console.log(err.message);
@@ -53,8 +55,8 @@ function initDatabase() {
 			)
 		`)
 
-		if (config.preloadDatabase) populateDatabase();
 		db.close();
+		//if (config.preloadDatabase) populateDatabase();
 	});
 }
 
