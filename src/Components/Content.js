@@ -32,6 +32,20 @@ function Content(props) {
 		setCurrentDir(path);
 	}
 
+	function handleClickEvent(e) {
+		switch (e.detail) {
+			case 1:
+				console.log('click');
+				break;
+			case 2:
+				console.log('dblclick');
+				break;
+			default:
+				console.log('noclick');
+				break;
+		}
+	} //onClick={handleClickEvent}
+
 	return <section id="content">
 		<FolderElement folderElement={parent_dir} customFunc={() => changeDirUpFunc()} />
 		{currentFolders.map((folderElement, index) => 
