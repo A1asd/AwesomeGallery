@@ -1,26 +1,7 @@
-//const sqlbuilder = require("sql");
 const sql = require("sqlite3");
 const path = require("path");
 
-const { Folder } = require("../src/Modules/Folder");
-
-//sqlbuilder.setDialect('sqlite');
-//var folderQB = sqlbuilder.define({
-//	name: 'folder',
-//	columns: ['id', 'path', 'parent'],
-//});
-//var fileQB = sqlbuilder.define({
-//	name: 'file',
-//	columns: ['id', 'path', 'parent'],
-//});
-//var tagQB = sqlbuilder.define({
-//	name: 'tag',
-//	columns: ['id', 'name'],
-//});
-//var fileTagQB = sqlbuilder.define({
-//	name: 'fileTagRelation',
-//	columns: ['file', 'tag'],
-//});
+const config = {preloadDatabase:false};
 
 function initDatabase() {
 	const db = new sql.Database(path.resolve(__dirname, 'db/configs.sqlite'), (err) => {
@@ -66,31 +47,31 @@ function initDatabase() {
 			)
 		`)
 
-		//disable in production
-		populateDatabase(db);
+		if (config.preloadDatabase) populateDatabase(db);
 		db.close();
 	});
 }
 
 function populateDatabase(db) {
+	//TODO: Redo inserts to reflect real folderstructures
 	//Folder
-	//const folderStmt = db.prepare("INSERT INTO folder(name, parent) VALUES (?,?)");
-	//[['Japan', null], ['folder', 1], ['to_deep', 2], ['nothing', 3], ['whatever', 2]].forEach(element => {
-	//	folderStmt.run([element[0], element[1]]);
-	//});
-	//folderStmt.finalize();
-	////Files
-	//const fileStmt = db.prepare("INSERT INTO file(name, parent) VALUES (?,?)");
-	//[['cute.png',1],['spoopy.png',2]].forEach(file => {
-	//	fileStmt.run([file[0], file[1]]);
-	//});
-	//fileStmt.finalize();
+	const folderStmt = db.prepare("INSERT INTO folder(name, parent) VALUES (?,?)");
+	[['Japan', null], ['folder', 1], ['to_deep', 2], ['nothing', 3], ['whatever', 2]].forEach(element => {
+		folderStmt.run([element[0], element[1]]);
+	});
+	folderStmt.finalize();
+	//Files
+	const fileStmt = db.prepare("INSERT INTO file(name, parent) VALUES (?,?)");
+	[['cute.png',1],['spoopy.png',2]].forEach(file => {
+		fileStmt.run([file[0], file[1]]);
+	});
+	fileStmt.finalize();
 	//Tag File Relation
-	//const fileTagStmt = db.prepare("INSERT INTO fileTagRelation(file, tag) VALUES (?,?)");
-	//[[1,1],[1,3],[2,1],[2,2]].forEach(relation => {
-	//	fileTagStmt.run([relation[0], relation[1]]);
-	//});
-	//fileTagStmt.finalize();
+	const fileTagStmt = db.prepare("INSERT INTO fileTagRelation(file, tag) VALUES (?,?)");
+	[[1,1],[1,3],[2,1],[2,2]].forEach(relation => {
+		fileTagStmt.run([relation[0], relation[1]]);
+	});
+	fileTagStmt.finalize();
 }
 
 function saveFolder(folder, parent = null) {
@@ -202,7 +183,6 @@ function buildFiles(files) {
 }
 
 function buildFolderStructure(folderlist, filelist) {
-	//console.log(folderlist, filelist);
 	function addToFolderRecursive(parent, folders) {
 		return folders.filter((folder) => folder.parent === parent).map((newFolder) => {
 			newFolder = {

@@ -11,16 +11,7 @@ async function handleFileOpen() {
 	});
 	if (!canceled) {
 		const directory = getDirectoriesRecursive(filePaths[0]);
-		//let root = new Folder(
-		//	filePaths[0].split(path.sep).pop(),
-		//	directory.path,
-		//	directory.parent,
-		//	directory.folders,
-		//	directory.files
-		//)
-		//console.log(root);
 		initDatabase.saveFolder(directory);
-		//console.log(root)
 		return initDatabase.getFolders();
 	}
 }
@@ -50,7 +41,6 @@ function getDirectories(srcpath) {
 
 function getFiles(srcpath) {
 	return fs.readdirSync(srcpath)
-		//.map(dirent => path.join(srcpath, dirent.name))
 		.filter(dirent => fs.statSync(path.join(srcpath, dirent)).isFile())
 		.map(filepath => new File(filepath, srcpath));
 }
