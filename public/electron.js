@@ -1,11 +1,16 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, systemPreferences } = require('electron');
 const path = require("path");
 const fs = require('fs');
 const initDatabase = require("./database");
 //const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
-const { handleFileOpen, handleGetFolders, handleSaveTag, handleGetTags } = require('../src/Modules/DataHandler');
+const DataHandler = require('../src/Modules/DataHandler');
 
+const accentColor = systemPreferences.getAccentColor();
 initDatabase.initDatabase();
+
+function handleAccent() {
+	return accentColor;
+}
 
 const PLATFORMS = {
 	MACOS: 'darwin',
@@ -38,12 +43,12 @@ app.on("ready", () => {
 	//installExtension(REACT_DEVELOPER_TOOLS, {loadExtensionOptions: {allowFileAccess: true}})
 	//	.then((name) => console.log(`Added Extension: ${name}`))
 	//	.catch((err) => console.log('An error occurred: ', err));
-	ipcMain.handle('dialog:openFile', handleFileOpen);
-	ipcMain.handle('database:getFolders', handleGetFolders);
-	ipcMain.handle('database:getTags', handleGetTags);
+	ipcMain.handle('dialog:openFile', DataHandler.handleFileOpen);
+	ipcMain.handle('database:getFolders', DataHandler.handleGetFolders);
+	ipcMain.handle('database:getTags', DataHandler.handleGetTags);
+	ipcMain.handle('system:getAccent', handleAccent);
 	ipcMain.handle('database:saveTag', (event, tag, fileId) => {
-		console.log(tag, fileId)
-		handleSaveTag(tag, fileId)
+		DataHandler.handleSaveTag(tag, fileId)
 	});
 	createWindow();
 });

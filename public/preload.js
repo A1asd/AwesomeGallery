@@ -5,4 +5,5 @@ contextBridge.exposeInMainWorld('myAPI', {
 	getFolders: () => ipcRenderer.invoke('database:getFolders'),
 	saveTag: (tag, fileId) => ipcRenderer.invoke('database:saveTag', tag, fileId),
 	getTags: () => ipcRenderer.invoke('database:getTags'),
+	getAccent: () => ipcRenderer.invoke('system:getAccent'),
 });

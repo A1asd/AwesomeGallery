@@ -9,7 +9,6 @@ import Folder from './Classes/Folder';
 import File from './Classes/File';
 import Tags from './Services/TagManager';
 
-
 //import { createRoot } from 'react-dom/client';
 
 //const files = [
@@ -47,11 +46,18 @@ function App() {
 		setFile(file);
 	}
 
+
 	const [tags, setTags] = useState([]);
 	//const [cont, setContent] = useState([]);
 	useEffect(() => {
 		const fetchData = async () => {
 			let folders = await window.myAPI.getFolders();
+			//changeCurrentDirs({
+			//	name: folders[0].name || '',
+			//	folders: folders[0].folders,
+			//	files: folders[0].files,
+			//	path: folders[0].path,
+			//});
 			folderStructure.addFolder({
 				name: folders[0].name || '',
 				folders: folders[0].folders,
@@ -59,6 +65,7 @@ function App() {
 				path: folders[0].path,
 			});
 			setTags(await window.myAPI.getTags());
+			console.log(await window.myAPI.getAccent())
 		}
 		fetchData();
 	}, [folderStructure, setTags]);
