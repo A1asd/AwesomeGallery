@@ -58,14 +58,15 @@ function App() {
 			//	files: folders[0].files,
 			//	path: folders[0].path,
 			//});
-			folderStructure.addFolder({
-				name: folders[0].name || '',
-				folders: folders[0].folders,
-				files: folders[0].files,
-				path: folders[0].path,
-			});
+			if (folders.length > 0) {
+				folderStructure.addFolder({
+					name: folders[0].name || '',
+					folders: folders[0].folders,
+					files: folders[0].files,
+					path: folders[0].path,
+				});
+			}
 			setTags(await window.myAPI.getTags());
-			console.log(await window.myAPI.getAccent())
 		}
 		fetchData();
 	}, [folderStructure, setTags]);

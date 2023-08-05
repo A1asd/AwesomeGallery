@@ -13,7 +13,6 @@ function Details(props) {
 	}, [setTags]);
 
 	function removeTag(tag) {
-		console.log('removing tag ' + tag.name + ' from ' + file.id);
 		window.myAPI.deleteTag(tag.name, file.id);
 	}
 
