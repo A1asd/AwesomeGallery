@@ -32,19 +32,11 @@ function Content(props) {
 		setCurrentDir(path);
 	}
 
-	function handleClickEvent(e) {
-		switch (e.detail) {
-			case 1:
-				console.log('click');
-				break;
-			case 2:
-				console.log('dblclick');
-				break;
-			default:
-				console.log('noclick');
-				break;
+	function renderFolderSelector() {
+		if (props.currentPath.length === 0) {
+			return <FolderSelector changeCurrentDirs={props.changeCurrentDirs} />
 		}
-	} //onClick={handleClickEvent}
+	}
 
 	return <section id="content">
 		<FolderElement folderElement={parent_dir} customFunc={() => changeDirUpFunc()} />
@@ -54,7 +46,7 @@ function Content(props) {
 		{currentFiles.map((file_element, index) => 
 			<FileElement key={index} handleFileChange={props.handleFileChange} file_element={file_element} />
 		)}
-		<FolderSelector changeCurrentDirs={props.changeCurrentDirs} />
+		{renderFolderSelector()}
 	</section>;
 }
 

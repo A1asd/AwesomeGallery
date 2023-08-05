@@ -5,9 +5,13 @@ import Header from './Components/Header';
 import Footer from './Components/Footer';
 import Sidebar from './Components/Sidebar';
 import { useState, useEffect } from 'react';
-import Folder from './Classes/Folder';
 
-const initFolders = new Folder('')
+const initFolders = {
+	name: '',
+	path: '',
+	folders: [],
+	files: [],
+};
 function App() {
 	const [file, setFile] = useState();
 	const [currentPath, setCurrentPath] = useState([]);
@@ -22,11 +26,8 @@ function App() {
 		const fetchData = async () => {
 			let folders = await window.myAPI.getFolders();
 			if (folders.length > 0) {
-				folderStructure.addFolder({
-					name: folders[0].name || '',
-					folders: folders[0].folders,
-					files: folders[0].files,
-					path: folders[0].path,
+				folders.forEach(folder => {
+					folderStructure.folders.push(folder);
 				});
 			}
 			setTags(await window.myAPI.getTags());
@@ -48,10 +49,18 @@ function App() {
 		if (file) return <Details details={file} />
 	}
 
+	function renderContent(viewmode = 'gallery') {
+		if (viewmode === 'gallery') {
+			return <Content folders={folderStructure} currentPath={currentPath} handleFileChange={handleFileChange} handleCurrentPathChange={handleCurrentPathChange} changeCurrentDirs={changeCurrentDirs} />
+		} else {
+			return <div>nothing to show</div>
+		}
+	}
+
 	return <div id="app">
 			<Header currentPath={currentPath} folderStructure={folderStructure} />
 			<Sidebar />
-			<Content folders={folderStructure} currentPath={currentPath} handleFileChange={handleFileChange} handleCurrentPathChange={handleCurrentPathChange} changeCurrentDirs={changeCurrentDirs} />
+			{renderContent('gallery')}
 			{renderDetails(file)}
 			<Footer currentPath={currentPath} folderStructure={folderStructure} />
 		</div>;
