@@ -34,6 +34,10 @@ async function handleSaveTag(tag, fileId) {
 	initDatabase.saveTag(tag, fileId);
 }
 
+async function handleDeleteTag(tagId, fileId) {
+	initDatabase.deleteTag(tagId, fileId);
+}
+
 async function handleGetTags() {
 	return initDatabase.getTags();
 }
@@ -62,4 +66,10 @@ function getDirectoriesRecursive(srcpath) {
 	)
 }
 
-module.exports = { handleFileOpen, handleGetFolders, handleSaveTag, handleGetTags };
+module.exports = {
+	handleFileOpen,
+	handleGetFolders,
+	handleSaveTag,
+	handleGetTags,
+	handleDeleteTag,
+};

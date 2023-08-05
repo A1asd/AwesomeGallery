@@ -50,6 +50,9 @@ app.on("ready", () => {
 	ipcMain.handle('database:saveTag', (event, tag, fileId) => {
 		DataHandler.handleSaveTag(tag, fileId)
 	});
+	ipcMain.handle('database:deleteTag', (event, tagId, fileId) => {
+		DataHandler.handleDeleteTag(tagId, fileId)
+	})
 	createWindow();
 });
 

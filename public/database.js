@@ -62,11 +62,6 @@ function initDatabase() {
 				PRIMARY KEY (file, tag),
 				FOREIGN KEY (file)
 					REFERENCES file (id)
-						ON DELETE CASCADE
-						ON UPDATE NO ACTION,
-				FOREIGN KEY (tag)
-					REFERENCES tag (id)
-						ON DELETE CASCADE
 						ON UPDATE NO ACTION
 			)
 		`)
@@ -150,11 +145,22 @@ function saveTag(tag, fileId) {
 			console.log(err.message);
 		}
 	});
-	console.log(tag, fileId);
 	const saveTagStmt = db.prepare("INSERT INTO fileTagRelation(tag, file) VALUES (?,?)");
 	saveTagStmt.run([tag, fileId]);
 	saveTagStmt.finalize();
-	db.close()
+	db.close();
+}
+
+function deleteTag(tagId, fileId) {
+	const db = new sql.Database(path.resolve(__dirname, 'db/configs.sqlite'), (err) => {
+		if (err) {
+			console.log(err.message);
+		}
+	});
+	const deleteTagStmt = db.prepare("DELETE FROM fileTagRelation WHERE file = ? AND tag = ?");
+	deleteTagStmt.run([fileId, tagId]);
+	deleteTagStmt.finalize();
+	db.close();
 }
 
 function getFolders() {
@@ -189,7 +195,6 @@ function getFolders() {
 
 function buildFiles(files) {
 	return files.map((file) => {
-		console.log(file)
 		if (file.tags) file.tags = file.tags.split(',').map((tag) => {return {name: tag}});
 		else file.tags = [];
 		return file;
@@ -232,4 +237,11 @@ function buildFolderStructure(folderlist, filelist) {
 	return hierarchyList;
 }
 
-module.exports = { initDatabase, getFolders, saveFolder, saveTag, getTags };
+module.exports = {
+	initDatabase,
+	getFolders,
+	saveFolder,
+	saveTag,
+	getTags,
+	deleteTag,
+};
