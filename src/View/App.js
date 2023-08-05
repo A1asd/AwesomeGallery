@@ -50,10 +50,10 @@ function App() {
 
 	return <div id="app">
 			<Header currentPath={currentPath} folderStructure={folderStructure} />
-			<Content folders={folderStructure} currentPath={currentPath} handleFileChange={handleFileChange} handleCurrentPathChange={handleCurrentPathChange} changeCurrentDirs={changeCurrentDirs} />
-			<Footer currentPath={currentPath} folderStructure={folderStructure} />
 			<Sidebar />
+			<Content folders={folderStructure} currentPath={currentPath} handleFileChange={handleFileChange} handleCurrentPathChange={handleCurrentPathChange} changeCurrentDirs={changeCurrentDirs} />
 			{renderDetails(file)}
+			<Footer currentPath={currentPath} folderStructure={folderStructure} />
 		</div>;
 }
 

@@ -2,7 +2,7 @@
   "name": "awesomegallery",
   "version": "0.1.0",
   "private": true,
-  "main": "public/electron.js",
+  "main": "src/electron.js",
   "homepage": "./",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",

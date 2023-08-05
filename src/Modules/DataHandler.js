@@ -1,9 +1,15 @@
 const { dialog } = require('electron');
 const fs = require('fs');
 const path = require('path');
-const initDatabase = require("../../public/database");
 const Folder = require("./Folder");
-const File = require("./File")
+const File = require("./File");
+const { FolderRepository } = require('../Repositories/FolderRepository');
+//const { FileRepository } = require('../Repositories/FileRepository');
+const { TagRepository } = require('../Repositories/TagRepository');
+
+const folderRepository = new FolderRepository();
+//const fileRepository = new FileRepository();
+const tagRepository = new TagRepository();
 
 async function handleFileOpen() {
 	const { canceled, filePaths } = await dialog.showOpenDialog({
@@ -11,26 +17,25 @@ async function handleFileOpen() {
 	});
 	if (!canceled) {
 		const directory = getDirectoriesRecursive(filePaths[0]);
-		initDatabase.saveFolder(directory);
-		return initDatabase.getFolders();
+		folderRepository.saveFolder(directory);
+		return folderRepository.getFolders();
 	}
 }
 
 async function handleGetFolders() {
-	let folders = initDatabase.getFolders();
-	return folders;
+	return folderRepository.getFolders();
 }
 
 async function handleSaveTag(tag, fileId) {
-	initDatabase.saveTag(tag, fileId);
+	tagRepository.saveTag(tag, fileId)
 }
 
 async function handleDeleteTag(tagId, fileId) {
-	initDatabase.deleteTag(tagId, fileId);
+	tagRepository.deleteTag(tagId, fileId);
 }
 
 async function handleGetTags() {
-	return initDatabase.getTags();
+	return tagRepository.getTags();
 }
 
 function getDirectories(srcpath) {

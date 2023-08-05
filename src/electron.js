@@ -1,9 +1,13 @@
 const { app, BrowserWindow, ipcMain, systemPreferences } = require('electron');
 const path = require("path");
-const initDatabase = require("./database");
-const DataHandler = require('../src/Modules/DataHandler');
+const initDatabase = require("./Modules/database");
+const DataHandler = require('./Modules/DataHandler');
 
-const config = {useBuildHTML:true};
+const config = {
+	buildHTML: true,
+	buildHTMLPath: path.join(__dirname, "../build/index.html"),
+	openDevTools: true,
+};
 
 const accentColor = systemPreferences.getAccentColor();
 initDatabase.initDatabase();
@@ -29,9 +33,9 @@ function createWindow() {
 		},
 	});
 
-	if (config.useBuildHTML) mainWindow.loadFile(path.join(__dirname, "../build/index.html"));
+	if (config.buildHTML) mainWindow.loadFile(config.buildHTMLPath);
 	else mainWindow.loadURL('http://localhost:3000');
-	mainWindow.webContents.openDevTools();
+	if (config.openDevTools) mainWindow.webContents.openDevTools();
 }
 
 app.on("ready", () => {
@@ -50,4 +54,4 @@ app.on("ready", () => {
 
 app.on('window-all-closed', () => {
 	if (process.platform !== PLATFORMS.MACOS) app.quit();
-})
+});
