@@ -37,7 +37,7 @@ const initFolders = new Folder('')
 //);
 
 function App() {
-	const [file, setFile] = useState({id: 0, name:"", tags:[]});
+	const [file, setFile] = useState();
 	const [currentPath, setCurrentPath] = useState([]);
 	//const [initialFolders, setInitialFolders] = useState(new Folder(''));
 	const [folderStructure, setCurrentFolderStructure ] = useState(initFolders);
@@ -94,12 +94,16 @@ function App() {
 		setCurrentFolderStructure(updatedFolders);
 	}
 
+	function renderDetails(file) {
+		if (file) return <Details details={file} />
+	}
+
 	return <div id="app">
 			<Header currentPath={currentPath} folderStructure={folderStructure} />
 			<Content folders={folderStructure} currentPath={currentPath} handleFileChange={handleFileChange} handleCurrentPathChange={handleCurrentPathChange} changeCurrentDirs={changeCurrentDirs} />
 			<Footer currentPath={currentPath} folderStructure={folderStructure} />
 			<Sidebar />
-			<Details details={file} />
+			{renderDetails(file)}
 		</div>;
 }
 
