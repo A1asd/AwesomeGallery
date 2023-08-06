@@ -6,6 +6,7 @@ const File = require("./File");
 const { FolderRepository } = require('../Repositories/FolderRepository');
 //const { FileRepository } = require('../Repositories/FileRepository');
 const { TagRepository } = require('../Repositories/TagRepository');
+const { CollectionRepository } = require('../Repositories/CollectionRepository');
 
 const folderRepository = new FolderRepository();
 //const fileRepository = new FileRepository();
@@ -38,6 +39,14 @@ async function handleGetTags() {
 	return tagRepository.getTags();
 }
 
+async function handleSaveFolderToCollection(folderId) {
+	new CollectionRepository().saveToCollection(folderId)
+}
+
+async function handleGetCollection() {
+	return new CollectionRepository().getCollection();
+}
+
 function getDirectories(srcpath) {
 	return fs.readdirSync(srcpath, { withFileTypes:true })
 		.map(dirent => path.join(srcpath, dirent.name))
@@ -67,4 +76,6 @@ module.exports = {
 	handleSaveTag,
 	handleGetTags,
 	handleDeleteTag,
+	handleSaveFolderToCollection,
+	handleGetCollection,
 };

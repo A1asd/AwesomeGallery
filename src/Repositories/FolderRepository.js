@@ -42,7 +42,7 @@ class FolderRepository extends AbstractRepository {
 			db.serialize(() => {
 				var folders = [];
 				var files = [];
-				let query = `SELECT * FROM folder`;
+				let query = `SELECT * FROM folder ORDER BY name ASC`;
 				let stmt = db.prepare(query);
 				stmt.all((err, rows) => {
 					folders = rows
@@ -52,7 +52,8 @@ class FolderRepository extends AbstractRepository {
 					FROM file f
 					LEFT JOIN fileTagRelation ftr ON f.id = ftr.file
 					LEFT JOIN folder ON f.parent = folder.id
-					GROUP BY f.id`;
+					GROUP BY f.id
+					ORDER BY f.name ASC`;
 				stmt = db.prepare(query);
 				stmt.all((err, rows) => {
 					files = this.buildFiles(rows);

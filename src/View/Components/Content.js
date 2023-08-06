@@ -41,7 +41,7 @@ function Content(props) {
 	return <section id="content">
 		<FolderElement folderElement={parent_dir} customFunc={() => changeDirUpFunc()} />
 		{currentFolders.map((folderElement, index) => 
-			<FolderElement key={index} folderElement={folderElement.name} customFunc={() => changeDirFunc(index)} />
+			<FolderElement key={index} folderId={folderElement.id} folderElement={folderElement.name} customFunc={() => changeDirFunc(index)} />
 		)}
 		{currentFiles.map((file_element, index) => 
 			<FileElement key={index} handleFileChange={props.handleFileChange} file_element={file_element} />

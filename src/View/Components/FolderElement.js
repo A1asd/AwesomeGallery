@@ -1,5 +1,4 @@
 function FolderElement(props) {
-
 	function handleClickEvent(e) {
 		switch (e.detail) {
 			case 1:
@@ -7,6 +6,7 @@ function FolderElement(props) {
 				//console.log('selecting folder: ' + props.folderElement)
 				break;
 			case 2:
+				window.myAPI.saveFolderToCollection(props.folderId)
 				break;
 			default:
 		}

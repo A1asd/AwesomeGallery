@@ -42,13 +42,17 @@ app.on("ready", () => {
 	ipcMain.handle('dialog:openFile', DataHandler.handleFileOpen);
 	ipcMain.handle('database:getFolders', DataHandler.handleGetFolders);
 	ipcMain.handle('database:getTags', DataHandler.handleGetTags);
+	ipcMain.handle('database:getCollection', DataHandler.handleGetCollection);
 	ipcMain.handle('system:getAccent', handleAccent);
 	ipcMain.handle('database:saveTag', (event, tag, fileId) => {
 		DataHandler.handleSaveTag(tag, fileId)
 	});
 	ipcMain.handle('database:deleteTag', (event, tagId, fileId) => {
 		DataHandler.handleDeleteTag(tagId, fileId)
-	})
+	});
+	ipcMain.handle('database:saveFolderToCollection', (event, folderId) => {
+		DataHandler.handleSaveFolderToCollection(folderId)
+	});
 	createWindow();
 });
 
