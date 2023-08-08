@@ -51,3 +51,22 @@ body {
 	width: auto;
 	height: auto;
 }
+
+.folder, .file {
+	display: inline-block;
+	width: 150px;
+	height: 172px;
+	overflow: hidden;
+}
+
+.folder span,
+.file span {
+	word-break: break-all;
+}
+
+.thumbnail {
+	max-width: 150px;
+	max-height: 150px;
+	width: auto;
+	height: auto;
+}

@@ -37,11 +37,17 @@ function Content(props) {
 			return <FolderSelector changeCurrentDirs={props.changeCurrentDirs} />
 		}
 	}
+	
+	function renderBackButton() {
+		if (props.currentPath.length !== 0) {
+			return <FolderElement type={'back'} folderElement={parent_dir} customFunc={() => changeDirUpFunc()} />
+		}
+	}
 
 	return <section id="content">
-		<FolderElement folderElement={parent_dir} customFunc={() => changeDirUpFunc()} />
+		{renderBackButton()}
 		{currentFolders.map((folderElement, index) => 
-			<FolderElement key={index} folderId={folderElement.id} folderElement={folderElement.name} customFunc={() => changeDirFunc(index)} />
+			<FolderElement type={'folders'} key={index} folderId={folderElement.id} folderElement={folderElement.name} customFunc={() => changeDirFunc(index)} />
 		)}
 		{currentFiles.map((file_element, index) => 
 			<FileElement key={index} handleFileChange={props.handleFileChange} file_element={file_element} />
