@@ -33,6 +33,8 @@ function createWindow() {
 		},
 	});
 
+	mainWindow.maximize();
+
 	if (config.buildHTML) mainWindow.loadFile(config.buildHTMLPath);
 	else mainWindow.loadURL('http://localhost:3000');
 	if (config.openDevTools) mainWindow.webContents.openDevTools();
@@ -41,11 +43,31 @@ function createWindow() {
 app.on("ready", () => {
 	ipcMain.handle('dialog:openFile', DataHandler.handleFileOpen);
 	ipcMain.handle('database:getFolders', DataHandler.handleGetFolders);
+	ipcMain.handle('database:getFoldersNotEmpty', DataHandler.handleGetFoldersNotEmpty);
+	ipcMain.handle('database:getFiles', DataHandler.handleGetFiles);
 	ipcMain.handle('database:getTags', DataHandler.handleGetTags);
 	ipcMain.handle('database:getCollection', DataHandler.handleGetCollection);
 	ipcMain.handle('system:getAccent', handleAccent);
+	ipcMain.handle('database:getFoldersByFolder', (event, folderId) => {
+		return DataHandler.handleGetFoldersByFolder(folderId)
+	});
+	ipcMain.handle('database:getGetFileById', (event, fileId) => {
+		return DataHandler.handleGetFileById(fileId)
+	});
+	ipcMain.handle('database:getFilesByFolder', (event, folderId) => {
+		return DataHandler.handleGetFilesByFolder(folderId)
+	});
+	ipcMain.handle('database:getFilesByTags', (event, tags) => {
+		return DataHandler.handleGetFilesByTags(tags)
+	});
+	ipcMain.handle('database:getTagsByFolder', (event, folder) => {
+		return DataHandler.handleGetTagsByFolder(folder)
+	});
 	ipcMain.handle('database:saveTag', (event, tag, fileId) => {
 		DataHandler.handleSaveTag(tag, fileId)
+	});
+	ipcMain.handle('database:deleteFolder', (event, folder) => {
+		DataHandler.handleDeleteFolder(folder)
 	});
 	ipcMain.handle('database:deleteTag', (event, tagId, fileId) => {
 		DataHandler.handleDeleteTag(tagId, fileId)

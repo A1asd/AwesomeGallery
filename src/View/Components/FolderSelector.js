@@ -1,8 +1,8 @@
-function FolderSelector(props) {
+function FolderSelector({resetDirs}) {
 	return <div className="folder"
 			onClick={async () => {
-				let result = await window.myAPI.openFile();
-				props.changeCurrentDirs(result);
+				await window.myAPI.openFile();
+				resetDirs();
 			}}>
 			<img className="thumbnail" src="./img/addfolder.svg" alt="add folder" />
 			<span className="">Add new Source</span>

@@ -8,11 +8,13 @@ const config = {
 
 class AbstractRepository {
 	openDatabase() {
-		return new sql.Database(path.resolve(__dirname, config.databasePath), (err) => {
+		let db =  new sql.Database(path.resolve(__dirname, config.databasePath), (err) => {
 			if (err) {
 				console.log(err.message);
 			}
 		});
+		db.get("PRAGMA foreign_keys = ON");
+		return db
 	}
 }
 

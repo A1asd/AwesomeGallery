@@ -1,14 +1,7 @@
-function Header(props) {
-	function getPathName(folders, array) {
-		let names = [];
-		for (let i = 0; i < array.length; i++) {
-			names.push(folders.folders[array[i]].name);
-			folders = folders.folders[array[i]];
-		}
-		return names.join('/');
-	}
+function Header({currentPath, viewMode}) {
+	let path = currentPath.map(p => p[1])
 
-	return <section id="header">Gallery://{getPathName(props.folderStructure, props.currentPath)}</section>
+	return <section id="header">Gallery://{path.join('/')}</section>
 }
 
 export default Header;

@@ -59,14 +59,34 @@ body {
 	overflow: hidden;
 }
 
+#content .tag.active {
+	background: rgba(255, 255, 255, .8);
+}
+#content .tag span {
+	display: block;
+	overflow: hidden;
+}
+
+.tags {
+	white-space: nowrap;
+	overflow-x: scroll;
+	height: 120px;
+}
+
+#content .tag {
+	display: inline-block;
+	width: 70px;
+}
+
 .folder span,
-.file span {
+.file span,
+#content .tag span {
 	word-break: break-all;
 }
 
 .thumbnail {
-	max-width: 150px;
-	max-height: 150px;
+	max-width: 100%;
+	max-height: 100%;
 	width: auto;
 	height: auto;
 }

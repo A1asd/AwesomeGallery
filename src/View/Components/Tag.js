@@ -1,5 +1,6 @@
-function Tag(props) {
-	return <div className="tag">{props.tag.name} ()<input type="button" value="-" onClick={() => {props.removeTag(props.tag)}} /></div>
+function Tag({tag, count, removeTag}) {
+	if (count) count = count.total
+	return <div className="tag">{tag.name} ({count})<input type="button" value="-" onClick={() => {removeTag(tag)}} /></div>
 }
 
 export default Tag;

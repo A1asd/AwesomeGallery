@@ -1,7 +1,9 @@
-function FileElement(props) {
-	let file = props.file_element;
-	return <div className="file" onClick={() => props.handleFileChange(file)}>
-			<img className="thumbnail" src={"./img/images.svg"} alt="a" />
+//import path from 'path';
+
+function FileElement({setFile, file_element}) {
+	let file = file_element;
+	return <div className="file" onClick={() => {setFile([file, 'file'])}}>
+			<img className="thumbnail" src={file.path + '/' + file.name} alt="a" />
 			<span>{file.name}</span>
 		</div>;
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import ViewModeManager from "../Services/ViewModeManager";
 
-function Sidebar(props) {
+function Sidebar({setViewMode}) {
 	const [collection, setCollection] = useState([]);
 
 	useEffect(() => {
@@ -11,13 +12,13 @@ function Sidebar(props) {
 	}, [setCollection])
 
 	const struct = {
-		views: ['gallery', 'tags', 'folders'],
+		views: ViewModeManager.VIEWMODES,
 		collection: collection,
 	}
 
 	return <section id="sidebar">
 		<h3>Viewmodes</h3>
-		{struct.views.map((view) => <div onClick={() => {props.setViewMode(view)}} >{view}</div>)}
+		{struct.views.map((view) => <div onClick={() => {setViewMode(view)}} >{view}</div>)}
 		<h3>Collections</h3>
 		{struct.collection.map((element) => <div>{element.name}</div>)}
 	</section>

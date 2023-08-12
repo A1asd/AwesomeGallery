@@ -6,8 +6,8 @@ class TagRepository extends AbstractRepository {
 		let promise = new Promise((resolve, reject) => {
 			db.serialize(() => {
 				let query = `SELECT ftr.tag, count(*) as total
-				FROM fileTagRelation ftr
-				GROUP BY ftr.tag`;
+					FROM fileTagRelation ftr
+					GROUP BY ftr.tag`;
 				let stmt = db.prepare(query);
 				stmt.all((err, rows) => {
 					/**
@@ -21,6 +21,27 @@ class TagRepository extends AbstractRepository {
 		});
 		return promise;
 	};
+	
+	getTagsByFolder(folderId) {
+		const db = this.openDatabase()
+		new Promise((resolve, reject) => {
+			db.serialize(() => {
+				let query = `SELECT ftr.tag
+					from file f
+					JOIN folder fo ON fo.id = f.parent
+					JOIN fileTagRelation ftr ON ftr.file = f.id
+					WHERE fo.id = ?
+					GROUP BY ftr.tag`;
+				let stmt = db.prepare(query, [folderId]);
+				stmt.all((err, rows) => {
+					console.log(rows)
+					resolve(rows)
+				});
+				stmt.finalize()
+			});
+			db.close();
+		});
+	}
 
 	saveTag(tag, fileId) {
 		const db = this.openDatabase()

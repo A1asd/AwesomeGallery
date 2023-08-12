@@ -4,12 +4,12 @@ const path = require('path');
 const Folder = require("./Folder");
 const File = require("./File");
 const { FolderRepository } = require('../Repositories/FolderRepository');
-//const { FileRepository } = require('../Repositories/FileRepository');
 const { TagRepository } = require('../Repositories/TagRepository');
 const { CollectionRepository } = require('../Repositories/CollectionRepository');
+const { FileRepository } = require('../Repositories/FileRepository');
 
 const folderRepository = new FolderRepository();
-//const fileRepository = new FileRepository();
+const fileRepository = new FileRepository();
 const tagRepository = new TagRepository();
 
 async function handleFileOpen() {
@@ -19,12 +19,43 @@ async function handleFileOpen() {
 	if (!canceled) {
 		const directory = getDirectoriesRecursive(filePaths[0]);
 		folderRepository.saveFolder(directory);
-		return folderRepository.getFolders();
 	}
 }
 
 async function handleGetFolders() {
 	return folderRepository.getFolders();
+}
+
+async function handleGetFoldersByFolder(folderId) {
+	return folderRepository.getFoldersByFolder(folderId);
+}
+
+async function handleGetFoldersNotEmpty() {
+	return folderRepository.getFoldersNotEmpty();
+}
+
+async function handleGetFilesByFolder(folderId) {
+	return fileRepository.getFilesByFolder(folderId);
+}
+
+async function handleGetFiles() {
+	return fileRepository.getFiles();
+}
+
+async function handleGetFilesByTags(tags) {
+	return fileRepository.getFilesByTags(tags);
+}
+
+async function handleGetFileById(fileId) {
+	return fileRepository.getFileById(fileId);
+}
+
+async function handleGetTagsByFolder(folderId) {
+	return tagRepository.getTagsByFolder(folderId);
+}
+
+async function handleDeleteFolder(folder) {
+	folderRepository.deleteFolder(folder)
 }
 
 async function handleSaveTag(tag, fileId) {
@@ -73,7 +104,15 @@ function getDirectoriesRecursive(srcpath) {
 module.exports = {
 	handleFileOpen,
 	handleGetFolders,
+	handleGetFoldersByFolder,
+	handleGetFoldersNotEmpty,
+	handleGetFiles,
+	handleGetFileById,
+	handleGetFilesByFolder,
+	handleGetFilesByTags,
+	handleGetTagsByFolder,
 	handleSaveTag,
+	handleDeleteFolder,
 	handleGetTags,
 	handleDeleteTag,
 	handleSaveFolderToCollection,

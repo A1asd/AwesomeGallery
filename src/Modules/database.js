@@ -18,6 +18,7 @@ function initDatabase() {
 			console.log(err.message);
 		}
 	});
+	db.get("PRAGMA foreign_keys = ON");
 	db.serialize(() => {
 		//db.run(`DROP TABLE IF EXISTS folder`).run(`
 		db.run(`
@@ -25,9 +26,9 @@ function initDatabase() {
 				id			INTEGER	PRIMARY KEY,
 				name		TEXT	NOT NULL,
 				path		TEXT,
-				parent		INTEGER,
+				parent		INTEGER	DEFAULT NULL,
 				FOREIGN KEY (parent)
-					REFERENCES folder (id)
+					REFERENCES folder(id)
 						ON DELETE CASCADE
 						ON UPDATE NO ACTION
 			)
@@ -52,7 +53,7 @@ function initDatabase() {
 				PRIMARY KEY (file, tag),
 				FOREIGN KEY (file)
 					REFERENCES file (id)
-						ON DELETE NO ACTION
+						ON DELETE CASCADE
 						ON UPDATE NO ACTION
 			)
 		`)

@@ -3,14 +3,14 @@ import FileElement from "./FileElement";
 import { useState } from "react";
 import FolderSelector from "./FolderSelector";
 
-function Content(props) {
+function Content({folders, currentPath, handleFileChange, handleCurrentPathChange, changeCurrentDirs}) {
 	const parent_dir = "..";
 
-	const [currentFolders, setCurrentFolders] = useState(props.folders.folders);
-	const [currentFiles, setCurrentFiles] = useState(props.folders.files);
+	const [currentFolders, setCurrentFolders] = useState(folders.folders);
+	const [currentFiles, setCurrentFiles] = useState(folders.files);
 
 	function setCurrentDir(path) {
-		let current_dir = props.folders;
+		let current_dir = folders;
 		path.forEach(current => {
 			current_dir = current_dir.folders[current]
 		});
@@ -19,27 +19,27 @@ function Content(props) {
 	}
 
 	function changeDirFunc(index) {
-		let path = props.currentPath.slice(); //copy of currentPath because arrays dont work much do they?!
+		let path = currentPath.slice(); //copy of currentPath because arrays dont work much do they?!
 		path.push(index);
-		props.handleCurrentPathChange(path);
+		handleCurrentPathChange(path);
 		setCurrentDir(path);
 	}
 
 	function changeDirUpFunc() {
-		let path = props.currentPath.slice(); //copy of currentPath because arrays dont work much do they?!
+		let path = currentPath.slice(); //copy of currentPath because arrays dont work much do they?!
 		path.pop();
-		props.handleCurrentPathChange(path);
+		handleCurrentPathChange(path);
 		setCurrentDir(path);
 	}
 
 	function renderFolderSelector() {
-		if (props.currentPath.length === 0) {
-			return <FolderSelector changeCurrentDirs={props.changeCurrentDirs} />
+		if (currentPath.length === 0) {
+			return <FolderSelector changeCurrentDirs={changeCurrentDirs} />
 		}
 	}
 	
 	function renderBackButton() {
-		if (props.currentPath.length !== 0) {
+		if (currentPath.length !== 0) {
 			return <FolderElement type={'back'} folderElement={parent_dir} customFunc={() => changeDirUpFunc()} />
 		}
 	}
@@ -50,7 +50,7 @@ function Content(props) {
 			<FolderElement type={'folders'} key={index} folderId={folderElement.id} folderElement={folderElement.name} customFunc={() => changeDirFunc(index)} />
 		)}
 		{currentFiles.map((file_element, index) => 
-			<FileElement key={index} handleFileChange={props.handleFileChange} file_element={file_element} />
+			<FileElement key={index} handleFileChange={handleFileChange} file_element={file_element} />
 		)}
 		{renderFolderSelector()}
 	</section>;

@@ -1,80 +1,50 @@
 import './App.css';
 import Details from './Components/Details';
-import Content from './Components/Content';
 import Header from './Components/Header';
 import Footer from './Components/Footer';
 import Sidebar from './Components/Sidebar';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import GalleryView from './Components/GalleryView';
 import TagView from './Components/TagView';
 import FolderView from './Components/FolderView';
-
-const initFolders = {
-	name: '',
-	path: '',
-	folders: [],
-	files: [],
-	setFolder(folder){this.folders = folder},
-	addFile(file){this.folders.push(file)},
-};
+import ViewModeManager from './Services/ViewModeManager';
 
 function App() {
-	const [file, setFile] = useState();
+	/** currentPath: [[folderid, foldername], [folderid, foldername], ...] */
 	const [currentPath, setCurrentPath] = useState([]);
-	const [folderStructure, setCurrentFolderStructure ] = useState(initFolders);
-	const [viewMode, setViewMode ] = useState('folders');
-	const [tags, setTags] = useState([]);
-
-	function handleFileChange(file) {
-		setFile(file);
-	}
-
-	useEffect(() => {
-		const fetchData = async () => {
-			let folders = await window.myAPI.getFolders();
-			if (folders.length > 0) {
-				folders.forEach(folder => {
-					folderStructure.folders.push(folder);
-				});
-			}
-			setTags(await window.myAPI.getTags());
-		}
-		fetchData();
-	}, [folderStructure, setTags]);
-
-	function handleCurrentPathChange(path) {
-		setCurrentPath(path);
-	}
-
-	function changeCurrentDirs(folder) {
-		let updatedFolders = Object.assign(Object.create(Object.getPrototypeOf(initFolders)),initFolders);
-		//updatedFolders.setFolder(folder);
-		setCurrentFolderStructure(updatedFolders);
-	}
+	const [file, setFile] = useState([]);
+	/** viewMode: folders OR tags OR gallery */
+	const [viewMode, setViewMode ] = useState(ViewModeManager.FOLDER);
+	/** folderStats: [foldercount, filecount] */
+	const [folderStats, setFolderStats] = useState([0,0]);
 
 	function renderDetails(file) {
-		if (file) return <Details details={file} />
+		if (file) return <Details details={file[0]} detailType={file[1]} />
 	}
 
 	function renderContent() {
-		if (viewMode === 'folders') {
-			//return <FolderView></FolderView>
-			return <Content folders={folderStructure} currentPath={currentPath} handleFileChange={handleFileChange} handleCurrentPathChange={handleCurrentPathChange} changeCurrentDirs={changeCurrentDirs} />
-		} else if (viewMode === 'tags') {
-			return <TagView></TagView>
-		} else if (viewMode === 'gallery') {
-			return <GalleryView></GalleryView>
+		if (viewMode === ViewModeManager.FOLDER) {
+			return <FolderView
+				currentPath={currentPath}
+				setCurrentPath={setCurrentPath}
+				setFile={setFile}
+				setFolderStats={setFolderStats} />
+		} else if (viewMode === ViewModeManager.TAGS) {
+			return <TagView
+				setFile={setFile} />
+		} else if (viewMode === ViewModeManager.GALLERY) {
+			return <GalleryView />
 		} else {
 			return <div>nothing to show</div>
 		}
 	}
 
 	return <div id="app">
-			<Header currentPath={currentPath} folderStructure={folderStructure} />
+			<Header currentPath={currentPath} viewMode={viewMode} />
 			<Sidebar setViewMode={setViewMode} />
 			{renderContent()}
 			{renderDetails(file)}
-			<Footer currentPath={currentPath} folderStructure={folderStructure} />
+			<Footer folderStats={folderStats} />
 		</div>;
 }
 
