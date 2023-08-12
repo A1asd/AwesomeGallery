@@ -40,6 +40,7 @@ function Details({details, detailType}) {
 					<input type="button" value="+" onClick={() => {window.myAPI.saveTag(newTag, details.id)}} />
 					{tags.filter(tag => tag.tag.includes(newTag)).map(tag => {
 						if (newTag)	return <div onClick={() => {window.myAPI.saveTag(tag.tag, details.id)}}>{tag.tag}</div>
+						return ''
 					})}
 				</div>
 		} else if (detailType === 'folder') {

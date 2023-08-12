@@ -16,6 +16,14 @@ class AbstractRepository {
 		db.get("PRAGMA foreign_keys = ON");
 		return db
 	}
+
+	buildFiles(files) {
+		return files.map((file) => {
+			if (file.tags) file.tags = file.tags.split(',').map((tag) => {return {name: tag}});
+			else file.tags = [];
+			return file;
+		});
+	}
 }
 
 module.exports = AbstractRepository;

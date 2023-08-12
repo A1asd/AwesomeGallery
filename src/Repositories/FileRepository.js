@@ -89,14 +89,6 @@ class FileRepository extends AbstractRepository {
 		});
 	}
 
-	buildFiles(files) {
-		return files.map((file) => {
-			if (file.tags) file.tags = file.tags.split(',').map((tag) => {return {name: tag}});
-			else file.tags = [];
-			return file;
-		});
-	}
-
 	populateFileDatabase() {
 		const db = this.openDatabase()
 		const fileStmt = db.prepare("INSERT INTO file(name, parent) VALUES (?,?)");

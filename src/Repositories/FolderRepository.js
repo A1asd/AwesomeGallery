@@ -145,14 +145,6 @@ class FolderRepository extends AbstractRepository {
 		db.close();
 	}
 
-	buildFiles(files) {
-		return files.map((file) => {
-			if (file.tags) file.tags = file.tags.split(',').map((tag) => {return {name: tag}});
-			else file.tags = [];
-			return file;
-		});
-	}
-
 	buildFolderStructure(folderlist, filelist) {
 		function addToFolderRecursive(parent, folders) {
 			return folders.filter((folder) => folder.parent === parent).map((newFolder) => {
