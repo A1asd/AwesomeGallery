@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import ViewModeManager from "../Services/ViewModeManager";
+import folders from "../../assets/img/folders.svg";
+import tags from "../../assets/img/tags.svg";
+import files from "../../assets/img/images.svg";
 
 function Sidebar({setViewMode}) {
 	const [collection, setCollection] = useState([]);
@@ -16,9 +19,24 @@ function Sidebar({setViewMode}) {
 		collection: collection,
 	}
 
+	function getViewIcon(viewMode) {
+		if (viewMode === 'folder') {
+			return folders;
+		} else if (viewMode === 'tags') {
+			return tags;
+		} else if (viewMode === 'gallery') {
+			return files;
+		}
+	}
+
 	return <section id="sidebar">
 		<h3>Viewmodes</h3>
-		{struct.views.map((view) => <div onClick={() => {setViewMode(view)}} >{view}</div>)}
+		{struct.views.map((view) => 
+				<div onClick={() => {setViewMode(view)}} >
+					<img className="sidebar-icon" src={getViewIcon(view)} alt="alt text"/>
+					<span>{view}</span>
+				</div>
+		)}
 		<h3>Collections</h3>
 		{struct.collection.map((element) => <div>{element.name}</div>)}
 	</section>

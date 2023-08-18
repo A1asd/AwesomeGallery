@@ -33,7 +33,8 @@ function App() {
 			return <TagView
 				setFile={setFile} />
 		} else if (viewMode === ViewModeManager.GALLERY) {
-			return <GalleryView />
+			return <GalleryView
+				setFile={setFile} />
 		} else {
 			return <div>nothing to show</div>
 		}

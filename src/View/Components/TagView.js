@@ -29,7 +29,7 @@ function TagView({setFile}) {
 	return <section id="content">
 		<div class="tags">
 		{tags.map((tag) => {
-				let className = 'tag';
+				let className = 'tag-view-tag';
 				if (tagFilter.includes(tag.tag)) {
 					className += ' active';
 				}
@@ -39,11 +39,9 @@ function TagView({setFile}) {
 			</div>
 		})}
 		</div>
-		<div class="files">
 		{currentFiles.map(file =>
-			<FileElement setFile={setFile} file_element={file} />
+			<FileElement setFile={setFile} file={file} />
 		)}
-		</div>
 	</section>
 }
 

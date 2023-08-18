@@ -40,7 +40,7 @@ function FolderView({setFile, currentPath, setCurrentPath, setFolderStats, setDe
 		let path = currentPath.slice();
 		path.pop();
 		setCurrentPath(path);
-		setCurrentFolder(path[path.length - 1]);
+		setCurrentFolder((path.length > 0) ? path[path.length - 1][0] : 0);
 	}
 
 	function renderFolderSelector() {
@@ -72,12 +72,12 @@ function FolderView({setFile, currentPath, setCurrentPath, setFolderStats, setDe
 				setDetailType={setDetailType}
 				customFunc={() => changeDirFunc(folderElement)} />
 		)}
-		{currentFiles.map((file_element, index) => 
+		{currentFiles.map((file, index) => 
 			<FileElement
 				key={index}
 				setFile={setFile}
 				setDetailType={setDetailType}
-				file_element={file_element} />
+				file={file} />
 		)}
 		{renderFolderSelector()}
 	</section>;
