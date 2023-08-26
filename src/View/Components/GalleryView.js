@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import FileElement from "./FileElement";
 
-function GalleryView({setFile, curFolder, setCurFolder}) {
+function GalleryView({setFile, curFolder, setCurFolder, detailsVisible}) {
 	const [galleries, setGalleries] = useState([]);
 	const [content, setContent] = useState([]);
 
@@ -15,7 +15,7 @@ function GalleryView({setFile, curFolder, setCurFolder}) {
 		fetchData();
 	}, [setGalleries, setContent, curFolder]);
 
-	return <section id="content" className="gallery-view">
+	return <section id="content" className={'gallery-view' + (!detailsVisible ? ' details-invisible' : '')}>
 		{galleries.map((gallery) =>
 			<div class="folder" onClick={() => setCurFolder(gallery.id)}>
 				<img className="thumbnail" src="./img/folders.svg" alt="a" />

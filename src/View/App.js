@@ -38,12 +38,14 @@ function App() {
 			return <TagView
 				setFile={setFile}
 				tagFilter={tagFilter}
-				setTagFilter={setTagFilter} />
+				setTagFilter={setTagFilter}
+				detailsVisible={!!file} />
 		} else if (viewMode === ViewModeManager.GALLERY) {
 			return <GalleryView
 				setFile={setFile}
 				curFolder={curFolder}
-				setCurFolder={setCurFolder} />
+				setCurFolder={setCurFolder}
+				detailsVisible={!!file} />
 		} else {
 			return <div>nothing to show</div>
 		}

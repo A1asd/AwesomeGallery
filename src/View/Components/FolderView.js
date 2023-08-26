@@ -59,7 +59,7 @@ function FolderView({setFile, currentPath, setCurrentPath, setFolderStats, setDe
 		}
 	}
 
-	return <section id="content" className={'folder-view' + (!detailsVisible ? ' details-visible' : '')}>
+	return <section id="content" className={'folder-view' + (!detailsVisible ? ' details-invisible' : '')}>
 		{renderBackButton()}
 		{currentFolders.map((folderElement, index) => 
 			<FolderElement

@@ -307,7 +307,7 @@
 	overflow: hidden;
 }
 
-#content.details-visible {
+#content.details-invisible {
 	grid-area: content / content / details / details;
 }
 

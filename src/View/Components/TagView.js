@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import FileElement from "./FileElement";
 
-function TagView({setFile, tagFilter, setTagFilter}) {
+function TagView({setFile, tagFilter, setTagFilter, detailsVisible}) {
 	const [tags, setTags] = useState([]);
 	const [currentFiles, setCurrentFiles] = useState([]);
 
@@ -25,16 +25,16 @@ function TagView({setFile, tagFilter, setTagFilter}) {
 		setTagFilter(tagFilterCopy);
 	}
 
-	return <section id="content" className="tag-view">
+	return <section id="content" className={'tag-view' + (!detailsVisible ? ' details-invisible' : '')}>
 		<div class="tags">
-		{tags.map((tag) => {
-				let className = 'tag-view-tag';
-				if (tagFilter.includes(tag.tag)) {
-					className += ' active';
-				}
+		{tags.sort((b,a) => {if (tagFilter.includes(a.tag)) {return 1} else {return -1}}).map((tag) => {
+			let className = 'tag-view-tag';
+			if (tagFilter.includes(tag.tag)) {
+				className += ' active';
+			}
 			return <div className={className} onClick={() => toggleTagFilter(tag.tag)}>
-			<img className="thumbnail" src="./img/tags.svg" alt="a" />
-			<span>{tag.tag} ({tag.total})</span>
+				<img className="thumbnail" src="./img/tags.svg" alt="a" />
+				<span>{tag.tag} ({tag.total})</span>
 			</div>
 		})}
 		</div>
