@@ -26,7 +26,7 @@ function TagView({setFile}) {
 		setTagFilter(tagFilterCopy);
 	}
 
-	return <section id="content">
+	return <section id="content" className="tag-view">
 		<div class="tags">
 		{tags.map((tag) => {
 				let className = 'tag-view-tag';

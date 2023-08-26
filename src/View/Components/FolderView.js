@@ -9,7 +9,7 @@ function FolderView({setFile, currentPath, setCurrentPath, setFolderStats, setDe
 	const [currentFolders, setCurrentFolders] = useState([]);
 	const [currentFiles, setCurrentFiles] = useState([]);
 
-	const [currentFolder, setCurrentFolder] = useState(null);
+	const [currentFolder, setCurrentFolder] = useState(currentPath[currentPath.length - 1] ? currentPath[currentPath.length - 1][0] : null);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -59,7 +59,7 @@ function FolderView({setFile, currentPath, setCurrentPath, setFolderStats, setDe
 		}
 	}
 
-	return <section id="content">
+	return <section id="content" className="folder-view">
 		{renderBackButton()}
 		{currentFolders.map((folderElement, index) => 
 			<FolderElement

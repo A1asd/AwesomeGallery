@@ -17,7 +17,7 @@ function GalleryView({setFile}) {
 		fetchData();
 	}, [setGalleries, setContent, curFolder]);
 
-	return <section id="content">
+	return <section id="content" className="gallery-view">
 		{galleries.map((gallery) =>
 			<div class="folder" onClick={() => setCurFolder(gallery.id)}>
 				<img className="thumbnail" src="./img/folders.svg" alt="a" />

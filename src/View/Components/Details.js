@@ -1,6 +1,7 @@
 import Tag from "./Tag";
 import { useState, useEffect } from 'react';
 import TagSelector from "./TagSelector";
+import folderImage from "../../assets/img/folders.svg";
 
 function Details({details, detailType}) {
 	const [tags, setTags] = useState([]);
@@ -37,23 +38,28 @@ function Details({details, detailType}) {
 						count={tags.filter(t => t.tag === tag.name)[0]}
 						removeTag={removeTag} />
 				)}
-				</div>
 				<TagSelector
 					details={details}
 					tags={tags}
 					saveFunction={(t, f) => {
 						window.myAPI.saveTag(t, f)}} />
+				</div>
+				<span>{details.path}</span>
 			</div>
 		} else if (detailType === 'folder') {
 			return <div>
 				<div>{details.name}</div>
+				<img id="details-image" src={folderImage} alt={details.name}/>
+				<div class="tag-wrapper">
 				<TagSelector
 					details={details}
 					tags={tags}
 					addLabel='add tag to folder'
 					saveFunction={(t, f) => window.myAPI.getFilesByFolder(f).then(files => files.forEach(file => 
 						window.myAPI.saveTag(t, file.id)))} />
+				</div>
 				{renderRemoveSource()}
+				<span>{details.path}</span>
 			</div>
 		}
 	}
