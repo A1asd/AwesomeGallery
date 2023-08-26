@@ -1,4 +1,5 @@
 const { contextBridge, ipcRenderer } = require('electron');
+const { shell } = require('electron');
 
 contextBridge.exposeInMainWorld('myAPI', {
 	openFile: () => ipcRenderer.invoke('dialog:openFile'),
@@ -17,4 +18,8 @@ contextBridge.exposeInMainWorld('myAPI', {
 	saveFolderToCollection: (folderId) => ipcRenderer.invoke('database:saveFolderToCollection', folderId),
 	getCollection: () => ipcRenderer.invoke('database:getCollection'),
 	getAccent: () => ipcRenderer.invoke('system:getAccent'),
+
+	// invoke in renderer like: window.myAPI.openFileInFolder('C:\\Users\\Johann\\Pictures\\Avatare\\nochzumachen\\gut als profile pic\\fE1bPC6.png')
+	openFileInFolder: (filePath) => shell.showItemInFolder(filePath),
+	openFileWithViewer: (filePath) => shell.openPath(filePath),
 });
