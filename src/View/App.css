@@ -16,13 +16,11 @@
 	--file-gap: 20px;
 
 	/* Debugging */
-	--header-color: #a11b22;
-	--sidebar-color: #846456;
-	--content-color: #4886ad;
-	--details-color: #cb8905;
-	--footer-color: #35637f;
-	--sidebar-color: #afafaf;
-	--content-color: #efefef;
+	--header-color: #baa2ba;
+	--details-color: #fcfcfc;
+	--footer-color: #baa2ba;
+	--sidebar-color: #cfcfcf;
+	--content-color: #fcfcfc;
 
 	/* Icons */
 	--folders-image: url('../assets/img/folders.svg');
@@ -69,6 +67,7 @@
 	background-color: var(--sidebar-color);
 	padding: calc(var(--file-gap) / 2);
 	border-right: 5px solid var(--os-highlight);
+	overflow-x: hidden;
 }
 
 #sidebar h3:not(:first-child) {
@@ -117,11 +116,12 @@
 	padding: 13px;
 	position: relative;
 	height: 125px;
+	width: 125px;
 }
 
 .folder-wrapper-front {
 	position: absolute;
-	width: 100%;
+	width: 150px;
 	left: 0px;
 	top: 0px;
 }
@@ -139,6 +139,7 @@
 	/*line-height: 2.3rem;*/
 }
 
+/* TODO: fix those widths. very wierd */
 .tag-search {
 	position: relative;
 	width: 190px;
@@ -157,6 +158,7 @@
 
 .tag-search-input {
 	margin: 0 !important;
+	z-index: 2;
 }
 
 .tag input {
@@ -182,11 +184,15 @@
 }
 
 .tag-list {
-	padding: 25px 0px 0px;
+	padding: 24px 0px 0px;
 	background-color: white;
-	margin-top: -30px;
+	margin-top: -29px;
 	border-radius: 15px;
-	width: 195px;
+	width: 190px;
+	margin-left: 2px;
+	border: 1px solid grey;
+	z-index: 1;
+	position: absolute;
 }
 
 .tag-list div {
@@ -234,14 +240,12 @@
 
 .folder, .file {
 	display: inline-block;
-	width: var(--icon-width);
-	height: calc(var(--icon-width) + 1.6rem);
+	height: calc(var(--icon-width) + 1.95rem);
 	overflow: hidden;
 	padding: 2px;
 }
 
-.file {
-	width: 100% !important;
+.folder, .file {
 	text-align: center;
 	align-items: center;
     display: flex;
@@ -267,18 +271,18 @@
 	background-color: var(--folder-highlight);
 }
 
-#content .folder:active span {
+/*#content .folder:active span {
 	background: var(--folder-highlight);
 	position: relative;
 	border: var(--folder-highlight-border-thickness) dotted var(--folder-highlight-border);
 	border-top: none;
 	margin: calc(0px - var(--folder-highlight-border-thickness)*2);
 	padding: var(--folder-highlight-border-thickness);
-}
+}*/
 
 #content {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(var(--icon-width), 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(calc(var(--icon-width) + 1.2rem), 1fr));
 	grid-gap: var(--file-gap);
 }
 
@@ -301,6 +305,10 @@
 #content .tag-view-tag span {
 	display: block;
 	overflow: hidden;
+}
+
+#content.details-visible {
+	grid-area: content / content / details / details;
 }
 
 .tags {

@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import FileElement from "./FileElement";
 
-function TagView({setFile}) {
+function TagView({setFile, tagFilter, setTagFilter}) {
 	const [tags, setTags] = useState([]);
 	const [currentFiles, setCurrentFiles] = useState([]);
-	const [tagFilter, setTagFilter] = useState([]);
 
 	useEffect(() => {
 		const fetchData = async () => {

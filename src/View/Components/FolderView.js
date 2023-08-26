@@ -3,7 +3,7 @@ import FolderSelector from "./FolderSelector";
 import FolderElement from "./FolderElement";
 import FileElement from "./FileElement";
 
-function FolderView({setFile, currentPath, setCurrentPath, setFolderStats, setDetailType}) {
+function FolderView({setFile, currentPath, setCurrentPath, setFolderStats, setDetailType, detailsVisible}) {
 	const parent_dir = "..";
 
 	const [currentFolders, setCurrentFolders] = useState([]);
@@ -59,7 +59,7 @@ function FolderView({setFile, currentPath, setCurrentPath, setFolderStats, setDe
 		}
 	}
 
-	return <section id="content" className="folder-view">
+	return <section id="content" className={'folder-view' + (!detailsVisible ? ' details-visible' : '')}>
 		{renderBackButton()}
 		{currentFolders.map((folderElement, index) => 
 			<FolderElement

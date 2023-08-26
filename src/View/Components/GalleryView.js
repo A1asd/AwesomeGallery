@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import FileElement from "./FileElement";
 
-function GalleryView({setFile}) {
+function GalleryView({setFile, curFolder, setCurFolder}) {
 	const [galleries, setGalleries] = useState([]);
 	const [content, setContent] = useState([]);
-
-	const [curFolder, setCurFolder] = useState(null);
 
 	useEffect(() => {
 		const fetchData = async () => {

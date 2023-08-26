@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import TagSelector from "./TagSelector";
 import folderImage from "../../assets/img/folders.svg";
 
-function Details({details, detailType}) {
+function Details({details, detailType, setFile}) {
 	const [tags, setTags] = useState([]);
 
 	useEffect(() => {
@@ -65,6 +65,7 @@ function Details({details, detailType}) {
 	}
 
 	return <section id="details">
+		<input type="button" onClick={() => setFile(null)} value=">>" />
 		{renderByDetailType()}
 	</section>
 }

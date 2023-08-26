@@ -30,14 +30,15 @@ function Sidebar({setViewMode}) {
 	}
 
 	return <section id="sidebar">
-		<h3>Viewmodes</h3>
+		<h3>Workspaces (Viewmodes)</h3>
 		{struct.views.map((view) => 
-				<div onClick={() => {setViewMode(view)}} >
-					<img className="sidebar-icon" src={getViewIcon(view)} alt="alt text"/>
-					<span>{view}</span>
-				</div>
+			<div onClick={() => {setViewMode(view)}} >
+				<img className="sidebar-icon" src={getViewIcon(view)} alt="alt text"/>
+				<span>{view}</span>
+			</div>
 		)}
-		<h3>Collections</h3>
+		<h3>Saves (Collections)</h3>
+		<input type="button" value="+"/>
 		{struct.collection.map((element) => <div>{element.name}</div>)}
 	</section>
 }

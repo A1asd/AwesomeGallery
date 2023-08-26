@@ -12,14 +12,18 @@ import ViewModeManager from './Services/ViewModeManager';
 function App() {
 	/** currentPath: [[folderid, foldername], [folderid, foldername], ...] */
 	const [currentPath, setCurrentPath] = useState([]);
-	const [file, setFile] = useState([]);
+	const [file, setFile] = useState(null);
 	/** viewMode: folders OR tags OR gallery */
 	const [viewMode, setViewMode ] = useState(ViewModeManager.FOLDER);
 	/** folderStats: [foldercount, filecount] */
 	const [folderStats, setFolderStats] = useState([0,0]);
+	/** store tag state for tag view */
+	const [tagFilter, setTagFilter] = useState([]);
+	/** store current folder for gallery view */
+	const [curFolder, setCurFolder] = useState(null);
 
 	function renderDetails(file) {
-		if (file) return <Details details={file[0]} detailType={file[1]} />
+		if (file) return <Details details={file[0]} detailType={file[1]} setFile={setFile} />
 	}
 
 	function renderContent() {
@@ -28,13 +32,18 @@ function App() {
 				currentPath={currentPath}
 				setCurrentPath={setCurrentPath}
 				setFile={setFile}
-				setFolderStats={setFolderStats} />
+				setFolderStats={setFolderStats}
+				detailsVisible={!!file} />
 		} else if (viewMode === ViewModeManager.TAGS) {
 			return <TagView
-				setFile={setFile} />
+				setFile={setFile}
+				tagFilter={tagFilter}
+				setTagFilter={setTagFilter} />
 		} else if (viewMode === ViewModeManager.GALLERY) {
 			return <GalleryView
-				setFile={setFile} />
+				setFile={setFile}
+				curFolder={curFolder}
+				setCurFolder={setCurFolder} />
 		} else {
 			return <div>nothing to show</div>
 		}
