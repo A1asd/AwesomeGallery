@@ -1,10 +1,6 @@
 const sql = require("sqlite3");
 const path = require("path");
-
-const config = {
-	preloadDatabase: false,
-	databasePath: '../../data/database.sqlite'
-};
+const config = require('../app.config');
 
 class AbstractRepository {
 	openDatabase() {
