@@ -2,12 +2,7 @@ const { app, BrowserWindow, ipcMain, systemPreferences } = require('electron');
 const path = require("path");
 const initDatabase = require("./Modules/database");
 const DataHandler = require('./Modules/DataHandler');
-
-const config = {
-	buildHTML: true,
-	buildHTMLPath: path.join(__dirname, "../build/index.html"),
-	openDevTools: true,
-};
+const config = require('./app.config');
 
 const accentColor = systemPreferences.getAccentColor();
 initDatabase.initDatabase();
@@ -40,7 +35,7 @@ function createWindow() {
 	if (config.openDevTools) mainWindow.webContents.openDevTools();
 }
 
-app.on("ready", () => {
+function createHandlers() {
 	ipcMain.handle('dialog:openFile', DataHandler.handleFileOpen);
 	ipcMain.handle('database:getFolders', DataHandler.handleGetFolders);
 	ipcMain.handle('database:getFoldersNotEmpty', DataHandler.handleGetFoldersNotEmpty);
@@ -75,6 +70,10 @@ app.on("ready", () => {
 	ipcMain.handle('database:saveFolderToCollection', (event, folderId) => {
 		DataHandler.handleSaveFolderToCollection(folderId)
 	});
+}
+
+app.on("ready", () => {
+	createHandlers();
 	createWindow();
 });
 

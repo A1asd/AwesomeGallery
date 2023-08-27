@@ -5,14 +5,10 @@ const { FolderRepository } = require("../Repositories/FolderRepository");
 const { TagRepository } = require("../Repositories/TagRepository");
 const { FileRepository } = require("../Repositories/FileRepository");
 const { CollectionRepository } = require("../Repositories/CollectionRepository");
-
-const config = {
-	preloadDatabase: false,
-	databasePath: '../../data/database.sqlite'
-};
+const config = require('../app.config');
 
 function initDatabase() {
-	if (config.preloadDatabase) fs.unlinkSync("data/database.sqlite");
+	if (config.preloadDatabase) fs.unlinkSync("src/data/database.sqlite");
 	const db = new sql.Database(path.resolve(__dirname, config.databasePath), (err) => {
 		if (err) {
 			console.log(err.message);

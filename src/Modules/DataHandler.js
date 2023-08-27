@@ -12,109 +12,95 @@ const folderRepository = new FolderRepository();
 const fileRepository = new FileRepository();
 const tagRepository = new TagRepository();
 
-async function handleFileOpen() {
-	const { canceled, filePaths } = await dialog.showOpenDialog({
-		properties: ['openDirectory'],
-	});
-	if (!canceled) {
-		const directory = getDirectoriesRecursive(filePaths[0]);
-		folderRepository.saveFolder(directory);
+class DataHandler {
+	async handleFileOpen() {
+		const { canceled, filePaths } = await dialog.showOpenDialog({
+			properties: ['openDirectory'],
+		});
+		if (!canceled) {
+			const directory = this.getDirectoriesRecursive(filePaths[0]);
+			folderRepository.saveFolder(directory);
+		}
+	}
+
+	async handleGetFolders() {
+		return folderRepository.getFolders();
+	}
+
+	async handleGetFoldersByFolder(folderId) {
+		return folderRepository.getFoldersByFolder(folderId);
+	}
+
+	async handleGetFoldersNotEmpty() {
+		return folderRepository.getFoldersNotEmpty();
+	}
+
+	async handleGetFilesByFolder(folderId) {
+		return fileRepository.getFilesByFolder(folderId);
+	}
+
+	async handleGetFiles() {
+		return fileRepository.getFiles();
+	}
+
+	async handleGetFilesByTags(tags) {
+		return fileRepository.getFilesByTags(tags);
+	}
+
+	async handleGetFileById(fileId) {
+		return fileRepository.getFileById(fileId);
+	}
+
+	async handleGetTagsByFolder(folderId) {
+		return tagRepository.getTagsByFolder(folderId);
+	}
+
+	async handleDeleteFolder(folder) {
+		folderRepository.deleteFolder(folder)
+	}
+
+	async handleSaveTag(tag, fileId) {
+		tagRepository.saveTag(tag, fileId)
+	}
+
+	async handleDeleteTag(tagId, fileId) {
+		tagRepository.deleteTag(tagId, fileId);
+	}
+
+	async handleGetTags() {
+		return tagRepository.getTags();
+	}
+
+	async handleSaveFolderToCollection(folderId) {
+		new CollectionRepository().saveToCollection(folderId)
+	}
+
+	async handleGetCollection() {
+		return new CollectionRepository().getCollection();
+	}
+
+	getDirectories(srcpath) {
+		return fs.readdirSync(srcpath, { withFileTypes:true })
+			.map(dirent => path.join(srcpath, dirent.name))
+			.filter(path => fs.statSync(path).isDirectory());
+	}
+
+	getFiles(srcpath) {
+		return fs.readdirSync(srcpath)
+			.filter(dirent => fs.statSync(path.join(srcpath, dirent)).isFile())
+			.map(filepath => new File(filepath, srcpath));
+	}
+
+	getDirectoriesRecursive(srcpath) {
+		let name = srcpath.split(path.sep).pop();
+		return new Folder(
+			name,
+			srcpath,
+			srcpath,
+			this.getDirectories(srcpath).map(this.getDirectoriesRecursive),
+			this.getFiles(srcpath)
+		)
 	}
 }
 
-async function handleGetFolders() {
-	return folderRepository.getFolders();
-}
-
-async function handleGetFoldersByFolder(folderId) {
-	return folderRepository.getFoldersByFolder(folderId);
-}
-
-async function handleGetFoldersNotEmpty() {
-	return folderRepository.getFoldersNotEmpty();
-}
-
-async function handleGetFilesByFolder(folderId) {
-	return fileRepository.getFilesByFolder(folderId);
-}
-
-async function handleGetFiles() {
-	return fileRepository.getFiles();
-}
-
-async function handleGetFilesByTags(tags) {
-	return fileRepository.getFilesByTags(tags);
-}
-
-async function handleGetFileById(fileId) {
-	return fileRepository.getFileById(fileId);
-}
-
-async function handleGetTagsByFolder(folderId) {
-	return tagRepository.getTagsByFolder(folderId);
-}
-
-async function handleDeleteFolder(folder) {
-	folderRepository.deleteFolder(folder)
-}
-
-async function handleSaveTag(tag, fileId) {
-	tagRepository.saveTag(tag, fileId)
-}
-
-async function handleDeleteTag(tagId, fileId) {
-	tagRepository.deleteTag(tagId, fileId);
-}
-
-async function handleGetTags() {
-	return tagRepository.getTags();
-}
-
-async function handleSaveFolderToCollection(folderId) {
-	new CollectionRepository().saveToCollection(folderId)
-}
-
-async function handleGetCollection() {
-	return new CollectionRepository().getCollection();
-}
-
-function getDirectories(srcpath) {
-	return fs.readdirSync(srcpath, { withFileTypes:true })
-		.map(dirent => path.join(srcpath, dirent.name))
-		.filter(path => fs.statSync(path).isDirectory());
-}
-
-function getFiles(srcpath) {
-	return fs.readdirSync(srcpath)
-		.filter(dirent => fs.statSync(path.join(srcpath, dirent)).isFile())
-		.map(filepath => new File(filepath, srcpath));
-}
-
-function getDirectoriesRecursive(srcpath) {
-	let name = srcpath.split(path.sep).pop();
-	return new Folder(
-		name,
-		srcpath,
-		srcpath,
-		getDirectories(srcpath).map(getDirectoriesRecursive),
-		getFiles(srcpath)
-	)
-}
-
-module.exports = {
-	handleFileOpen,
-	handleGetFolders,
-	handleGetFoldersByFolder,
-	handleGetFoldersNotEmpty,
-	handleGetFiles,
-	handleGetFileById,
-	handleGetFilesByFolder,
-	handleGetFilesByTags,
-	handleGetTagsByFolder,
-	handleSaveTag,
-	handleDeleteFolder,
-	handleGetTags,
-	handleDeleteTag,
-	handleSaveFolderToCollection,
-	handleGetCollection,
-};
+module.exports = new DataHandler();
