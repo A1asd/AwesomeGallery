@@ -177,16 +177,6 @@ class FolderRepository extends AbstractRepository {
 		});
 		return hierarchyList;
 	}
-
-	populateFolderDatabase() {
-		const db = this.openDatabase();
-		const folderStmt = db.prepare("INSERT INTO folder(name, parent) VALUES (?,?)");
-		[['Japan', null], ['folder', 1], ['to_deep', 2], ['nothing', 3], ['whatever', 2]].forEach(element => {
-			folderStmt.run([element[0], element[1]]);
-		});
-		folderStmt.finalize();
-		db.close();
-	}
 }
 
 module.exports = { FolderRepository };

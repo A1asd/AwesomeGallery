@@ -1,10 +1,6 @@
 const sql = require("sqlite3");
 const path = require("path");
 const fs = require('fs');
-const { FolderRepository } = require("../Repositories/FolderRepository");
-const { TagRepository } = require("../Repositories/TagRepository");
-const { FileRepository } = require("../Repositories/FileRepository");
-const { CollectionRepository } = require("../Repositories/CollectionRepository");
 const config = require('../app.config');
 
 function initDatabase() {
@@ -68,20 +64,6 @@ function initDatabase() {
 		//if (config.preloadDatabase) populateDatabase();
 	});
 }
-
-function populateDatabase() {
-	//TODO: Redo inserts to reflect real folderstructures
-	//Folder
-	new FolderRepository().populateFolderDatabase();
-	//Files
-	new FileRepository().populateFileDatabase();
-	//Tag File Relation
-	new TagRepository().populateTagDatabase();
-
-	new CollectionRepository().populateCollectionDatabase();
-}
-
-
 
 module.exports = {
 	initDatabase,

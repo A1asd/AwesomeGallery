@@ -5,7 +5,7 @@ const sql = require("sqlite3");
 
 const USAGE = `
 use as: node migration.js argument\n
-argument can be: init and migrate
+argument can be: init, mockup and migrate
 `
 
 function printUsage() {
@@ -106,8 +106,61 @@ function migration1() {
 	console.log('Migration done')
 }
 
+function populateFolderDatabase() {
+	const db = this.openDatabase();
+	const folderStmt = db.prepare("INSERT INTO folder(name, parent) VALUES (?,?)");
+	[['Japan', null], ['folder', 1], ['to_deep', 2], ['nothing', 3], ['whatever', 2]].forEach(element => {
+		folderStmt.run([element[0], element[1]]);
+	});
+	folderStmt.finalize();
+	db.close();
+}
+
+function populateFileDatabase() {
+	const db = this.openDatabase()
+	const fileStmt = db.prepare("INSERT INTO file(name, parent) VALUES (?,?)");
+	[['cute.png',1],['spoopy.png',2]].forEach(file => {
+		fileStmt.run([file[0], file[1]]);
+	});
+	fileStmt.finalize();
+	db.close();
+}
+
+function populateTagDatabase() {
+	const db = this.openDatabase()
+	const fileTagStmt = db.prepare("INSERT INTO fileTagRelation(file, tag) VALUES (?,?)");
+	[[1,1],[1,3],[2,1],[2,2]].forEach(relation => {
+		fileTagStmt.run([relation[0], relation[1]]);
+	});
+	fileTagStmt.finalize();
+	db.close();
+}
+
+function populateCollectionDatabase() {
+	const db = this.openDatabase()
+	const fileStmt = db.prepare("INSERT INTO collection(folder) VALUES (?)");
+	//[['cute.png',1],['spoopy.png',2]].forEach(file => {
+	//	fileStmt.run([file[0], file[1]]);
+	//});
+	fileStmt.finalize();
+	db.close();
+}
+
+function populateDatabase() {
+	//TODO: Redo inserts to reflect real folderstructures
+	//Folder
+	populateFolderDatabase();
+	//Files
+	populateFileDatabase();
+	//Tag File Relation
+	populateTagDatabase();
+
+	populateCollectionDatabase();
+}
+
 switch (process.argv[2]) {
 	case 'init': initialDatabase(); break;
+	case 'mockdata': populateDatabase(); break;
 	case 'migrate': migration1(); break;
 	default: printUsage();
 }

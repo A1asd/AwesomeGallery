@@ -58,16 +58,6 @@ class TagRepository extends AbstractRepository {
 		deleteTagStmt.finalize();
 		db.close();
 	}
-
-	populateTagDatabase() {
-		const db = this.openDatabase()
-		const fileTagStmt = db.prepare("INSERT INTO fileTagRelation(file, tag) VALUES (?,?)");
-		[[1,1],[1,3],[2,1],[2,2]].forEach(relation => {
-			fileTagStmt.run([relation[0], relation[1]]);
-		});
-		fileTagStmt.finalize();
-		db.close();
-	}
 }
 
 
