@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import FileElement from "./FileElement";
+import tagImage from '../../assets/img/tags.svg';
 
 function TagView({setFile, tagFilter, setTagFilter, detailsVisible}) {
 	const [tags, setTags] = useState([]);
@@ -33,7 +34,7 @@ function TagView({setFile, tagFilter, setTagFilter, detailsVisible}) {
 				className += ' active';
 			}
 			return <div className={className} onClick={() => toggleTagFilter(tag.tag)}>
-				<img className="thumbnail" src="./img/tags.svg" alt="a" />
+				<img className="thumbnail" src={tagImage} alt="a" />
 				<span>{tag.tag} ({tag.total})</span>
 			</div>
 		})}
