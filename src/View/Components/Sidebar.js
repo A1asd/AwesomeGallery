@@ -20,11 +20,11 @@ function Sidebar({setViewMode}) {
 	}
 
 	function getViewIcon(viewMode) {
-		if (viewMode === 'folder') {
+		if (viewMode === ViewModeManager.FOLDER) {
 			return folders;
-		} else if (viewMode === 'tags') {
+		} else if (viewMode === ViewModeManager.TAGS) {
 			return tags;
-		} else if (viewMode === 'gallery') {
+		} else if (viewMode === ViewModeManager.GALLERY) {
 			return files;
 		}
 	}
