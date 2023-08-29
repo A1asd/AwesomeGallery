@@ -67,8 +67,8 @@ function createHandlers() {
 	ipcMain.handle('database:deleteTag', (event, tagId, fileId) => {
 		DataHandler.handleDeleteTag(tagId, fileId)
 	});
-	ipcMain.handle('database:saveFolderToCollection', (event, folderId) => {
-		DataHandler.handleSaveFolderToCollection(folderId)
+	ipcMain.handle('database:saveViewToCollection', (event, viewMode, name, filterOptions) => {
+		DataHandler.handleSaveViewToCollection(viewMode, name, filterOptions)
 	});
 }
 

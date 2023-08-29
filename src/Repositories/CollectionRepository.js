@@ -24,11 +24,20 @@ class CollectionRepository extends AbstractRepository {
 		});
 	}
 
-	saveToCollection(folderId) {
+	saveViewToCollection(viewMode, name, filterOptions) {
 		const db = this.openDatabase();
-		const saveCollectionStmt = db.prepare("INSERT INTO collection(folder) VALUES (?)");
-		saveCollectionStmt.run([folderId]);
-		saveCollectionStmt.finalize();
+		const saveCollectionStmt = db.prepare("INSERT INTO collection(viewmode, name) VALUES (?,?)");
+		db.serialize(() => {
+			saveCollectionStmt.run([viewMode, name], (err) => {
+				if (err) {
+					console.log(err);
+					return 0;
+				}
+				const saveCollectionFilterStmt = db.prepare("INSERT INTO collectionFilter(collection, filter) VALUES (?,?)");
+				saveCollectionFilterStmt.run([this.lastId, filterOptions]);
+			});
+		});
+		//saveCollectionStmt.finalize();
 		db.close()
 	}
 }

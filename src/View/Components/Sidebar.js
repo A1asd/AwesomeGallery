@@ -4,8 +4,9 @@ import folders from "../../assets/img/folders.svg";
 import tags from "../../assets/img/tags.svg";
 import files from "../../assets/img/images.svg";
 
-function Sidebar({setViewMode}) {
+function Sidebar({setViewMode, addCurrentViewToCollection}) {
 	const [collection, setCollection] = useState([]);
+	const [newCollectionName, setNewCollectionName] = useState('');
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -38,7 +39,8 @@ function Sidebar({setViewMode}) {
 			</div>
 		)}
 		<h3>Saves (Collections)</h3>
-		<input type="button" value="+"/>
+		<input type="text" value={newCollectionName} />
+		<input type="button" value="+" onClick={() => addCurrentViewToCollection(newCollectionName)}/>
 		{struct.collection.map((element) => <div>{element.name}</div>)}
 	</section>
 }

@@ -11,6 +11,7 @@ const { FileRepository } = require('../Repositories/FileRepository');
 const folderRepository = new FolderRepository();
 const fileRepository = new FileRepository();
 const tagRepository = new TagRepository();
+const collectionRepository = new CollectionRepository();
 
 class DataHandler {
 	async handleFileOpen() {
@@ -71,12 +72,12 @@ class DataHandler {
 		return tagRepository.getTags();
 	}
 
-	async handleSaveFolderToCollection(folderId) {
-		new CollectionRepository().saveToCollection(folderId)
+	async handleSaveViewToCollection(viewMode, name, filterOptions) {
+		collectionRepository.saveViewToCollection(viewMode, name, filterOptions);
 	}
 
 	async handleGetCollection() {
-		return new CollectionRepository().getCollection();
+		return collectionRepository.getCollection();
 	}
 
 	getDirectories(srcpath) {

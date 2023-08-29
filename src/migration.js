@@ -83,6 +83,7 @@ function migration1() {
 	});
 	console.log('Migrating first migration')
 
+	db.get("PRAGMA foreign_keys = ON");
 	db.serialize(() => {
 		db.run(`
 			ALTER TABLE folder
@@ -91,14 +92,15 @@ function migration1() {
 
 		/*TODO: läuft noch nich*/
 		db.run(`
-			BEGIN TRANSACTION;
-			DROP TABLE collection;
+			DROP TABLE collection
+		`)
+		db.run(`
 			CREATE TABLE collection (
 				id			INTEGER PRIMARY KEY,
-				viewmode	TEXT NOT NULL,
-				name		TEXT NOT NULL
-			);
-			COMMIT;
+				viewmode	TEXT,
+				name		TEXT,
+				UNIQUE(viewmode, name)
+			)
 		`)
 
 		db.close();

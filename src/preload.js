@@ -15,7 +15,7 @@ contextBridge.exposeInMainWorld('myAPI', {
 	getTagsByFolder: (folderId) => ipcRenderer.invoke('database:getTagsByFolder', folderId),
 	saveTag: (tag, fileId) => ipcRenderer.invoke('database:saveTag', tag, fileId),
 	deleteTag: (tagId, fileId) => ipcRenderer.invoke('database:deleteTag', tagId, fileId),
-	saveFolderToCollection: (folderId) => ipcRenderer.invoke('database:saveFolderToCollection', folderId),
+	saveViewToCollection: (viewMode, name, filterOptions) => ipcRenderer.invoke('database:saveViewToCollection', viewMode, name, filterOptions),
 	getCollection: () => ipcRenderer.invoke('database:getCollection'),
 	getAccent: () => ipcRenderer.invoke('system:getAccent'),
 

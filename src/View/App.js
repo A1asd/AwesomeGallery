@@ -11,7 +11,7 @@ import ViewModeManager from './Services/ViewModeManager';
 
 function App() {
 	/** currentPath: [[folderid, foldername], [folderid, foldername], ...] */
-	const [currentPath, setCurrentPath] = useState([]);
+	const [currentPath, setCurrentPath] = useState([[8, 'Test']]);
 	const [file, setFile] = useState(null);
 	/** viewMode: folders OR tags OR gallery */
 	const [viewMode, setViewMode ] = useState(ViewModeManager.FOLDER);
@@ -24,6 +24,15 @@ function App() {
 
 	function renderDetails(file) {
 		if (file) return <Details details={file[0]} detailType={file[1]} setFile={setFile} />
+	}
+
+	function addCurrentViewToCollection(name) {
+		switch (viewMode) {
+			case ViewModeManager.FOLDER: window.myAPI.saveViewToCollection(viewMode, name, currentPath);break;
+			case ViewModeManager.TAGS: window.myAPI.saveViewToCollection(viewMode, name, tagFilter);break;
+			case ViewModeManager.GALLERY: window.myAPI.saveViewToCollection(viewMode, name, curFolder);break;
+			default: console.log('nothing to save');
+		}
 	}
 
 	function renderContent() {
@@ -53,7 +62,7 @@ function App() {
 
 	return <div id="app">
 			<Header currentPath={currentPath} viewMode={viewMode} />
-			<Sidebar setViewMode={setViewMode} />
+			<Sidebar setViewMode={setViewMode} addCurrentViewToCollection={addCurrentViewToCollection} />
 			{renderContent()}
 			{renderDetails(file)}
 			<Footer folderStats={folderStats} />
