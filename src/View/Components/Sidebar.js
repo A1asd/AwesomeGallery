@@ -6,7 +6,7 @@ import files from "../../assets/img/images.svg";
 
 function Sidebar({setViewMode, addCurrentViewToCollection}) {
 	const [collection, setCollection] = useState([]);
-	const [newCollectionName, setNewCollectionName] = useState('');
+	const [newCollectionName, ] = useState('');
 
 	useEffect(() => {
 		const fetchData = async () => {

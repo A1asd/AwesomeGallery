@@ -17,10 +17,11 @@ function TagSelector({details, tags, saveFunction, addLabel = '+'}) {
 		<div class="tag-list">
 			{tags.filter(tag => 
 				tag.tag.includes(newTag)).map(tag => {
-				if (newTag && details.tags)	return <div className={details.tags.filter(t => t.name === tag.tag).length > 0 ? 'used' : ''} onClick={() => {saveFunction(tag.tag, details.id)}}>{tag.tag}</div>
-				else if (newTag) return <div onClick={() => {saveFunction(tag.tag, details.id); clearInput()}}>{tag.tag}</div>
-				return ''
-			})}
+					if (newTag && details.tags)	return <div className={details.tags.filter(t => t.name === tag.tag).length > 0 ? 'used' : ''} onClick={() => {saveFunction(tag.tag, details.id)}}>{tag.tag}</div>
+					else if (newTag) return <div onClick={() => {saveFunction(tag.tag, details.id); clearInput()}}>{tag.tag}</div>
+					return ''
+				}
+			)}
 		</div>
 	</div>
 }

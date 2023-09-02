@@ -37,24 +37,11 @@ function App() {
 
 	function renderContent() {
 		if (viewMode === ViewModeManager.FOLDER) {
-			return <FolderView
-				currentPath={currentPath}
-				setCurrentPath={setCurrentPath}
-				setFile={setFile}
-				setFolderStats={setFolderStats}
-				detailsVisible={!!file} />
+			return <FolderView currentPath={currentPath} setCurrentPath={setCurrentPath} setFile={setFile} setFolderStats={setFolderStats} detailsVisible={!!file} />
 		} else if (viewMode === ViewModeManager.TAGS) {
-			return <TagView
-				setFile={setFile}
-				tagFilter={tagFilter}
-				setTagFilter={setTagFilter}
-				detailsVisible={!!file} />
+			return <TagView setFile={setFile} tagFilter={tagFilter} setTagFilter={setTagFilter} detailsVisible={!!file} />
 		} else if (viewMode === ViewModeManager.GALLERY) {
-			return <GalleryView
-				setFile={setFile}
-				curFolder={curFolder}
-				setCurFolder={setCurFolder}
-				detailsVisible={!!file} />
+			return <GalleryView setFile={setFile} curFolder={curFolder} setCurFolder={setCurFolder} detailsVisible={!!file} />
 		} else {
 			return <div>nothing to show</div>
 		}
