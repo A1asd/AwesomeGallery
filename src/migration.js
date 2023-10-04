@@ -131,7 +131,7 @@ function populateFileDatabase() {
 function populateTagDatabase() {
 	const db = this.openDatabase()
 	const fileTagStmt = db.prepare("INSERT INTO fileTagRelation(file, tag) VALUES (?,?)");
-	[[1,1],[1,3],[2,1],[2,2]].forEach(relation => {
+	[[1,'selfie'],[1,'cutieee'],[2,'selfie'],[2,'spoopy']].forEach(relation => {
 		fileTagStmt.run([relation[0], relation[1]]);
 	});
 	fileTagStmt.finalize();

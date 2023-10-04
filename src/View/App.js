@@ -11,7 +11,7 @@ import ViewModeManager from './Services/ViewModeManager';
 
 function App() {
 	/** currentPath: [[folderid, foldername], [folderid, foldername], ...] */
-	const [currentPath, setCurrentPath] = useState([[8, 'Test']]);
+	const [currentPath, setCurrentPath] = useState([]);
 	const [file, setFile] = useState(null);
 	/** viewMode: folders OR tags OR gallery */
 	const [viewMode, setViewMode ] = useState(ViewModeManager.FOLDER);
@@ -48,7 +48,7 @@ function App() {
 	}
 
 	return <div id="app">
-			<Header currentPath={currentPath} viewMode={viewMode} />
+			<Header currentPath={currentPath} setCurrentPath={setCurrentPath} currentFolder={curFolder} tagFilter={tagFilter} viewMode={viewMode} />
 			<Sidebar setViewMode={setViewMode} addCurrentViewToCollection={addCurrentViewToCollection} />
 			{renderContent()}
 			{renderDetails(file)}

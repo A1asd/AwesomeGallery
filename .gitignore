@@ -9,6 +9,7 @@
 /coverage
 /src/data/*.sqlite
 /src/Tests/data/*.sqlite
+/src/Tests/Testdir
 
 # production
 /build

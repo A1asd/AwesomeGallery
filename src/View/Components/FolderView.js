@@ -9,18 +9,16 @@ function FolderView({setFile, currentPath, setCurrentPath, setFolderStats, setDe
 	const [currentFolders, setCurrentFolders] = useState([]);
 	const [currentFiles, setCurrentFiles] = useState([]);
 
-	const [currentFolder, setCurrentFolder] = useState(currentPath[currentPath.length - 1] ? currentPath[currentPath.length - 1][0] : null);
-
 	useEffect(() => {
 		const fetchData = async () => {
-			let folders = await window.myAPI.getFoldersByFolder(currentFolder);
-			let files = await window.myAPI.getFilesByFolder(currentFolder);
+			let folders = await window.myAPI.getFoldersByFolder(currentPath[currentPath.length - 1] ? currentPath[currentPath.length - 1][0] : null);
+			let files = await window.myAPI.getFilesByFolder(currentPath[currentPath.length - 1] ? currentPath[currentPath.length - 1][0] : null);
 			setCurrentFolders(folders);
 			setCurrentFiles(files);
 			setFolderStats([folders.length, files.length])
 		}
 		fetchData();
-	}, [setCurrentFolders, setCurrentFiles, setFolderStats, currentFolder]);
+	}, [setCurrentFolders, setCurrentFiles, setFolderStats, currentPath]);
 
 	async function resetDirs() {
 		//setCurrentPath([]);
@@ -33,14 +31,12 @@ function FolderView({setFile, currentPath, setCurrentPath, setFolderStats, setDe
 		let path = currentPath.slice();
 		path.push([folder.id, folder.name]);
 		setCurrentPath(path);
-		setCurrentFolder(folder.id)
 	}
 
 	function changeDirUpFunc() {
 		let path = currentPath.slice();
 		path.pop();
 		setCurrentPath(path);
-		setCurrentFolder((path.length > 0) ? path[path.length - 1][0] : 0);
 	}
 
 	function renderFolderSelector() {
