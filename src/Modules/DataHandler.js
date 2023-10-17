@@ -24,6 +24,15 @@ class DataHandler {
 		}
 	}
 
+	async handleUpdateFolderpathWithDialog(folderId) {
+		const { canceled, filePaths } = await dialog.showOpenDialog({
+			properties: ['openDirectory'],
+		});
+		if (!canceled) {
+			folderRepository.updateFolder(folderId, filePaths[0]);
+		}
+	}
+
 	async handleGetFolders() {
 		return folderRepository.getFolders();
 	}

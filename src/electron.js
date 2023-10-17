@@ -33,10 +33,18 @@ function createWindow() {
 	if (config.buildHTML) mainWindow.loadFile(config.buildHTMLPath);
 	else mainWindow.loadURL('http://localhost:3000');
 	if (config.openDevTools) mainWindow.webContents.openDevTools();
+
+	mainWindow.webContents.on('did-finish-load', function() {
+		//TODO: make a alert interface
+		//mainWindow.webContents.send('add-alert', new Alert('started succesfully but with minor hiccups', Alert.NOTICE))
+	});
 }
 
 function createHandlers() {
 	ipcMain.handle('dialog:openFile', DataHandler.handleFileOpen);
+	ipcMain.handle('dialog:updateFolderpathWithDialog', (event, folderId) => {
+		return DataHandler.handleUpdateFolderpathWithDialog(folderId)
+	});
 	ipcMain.handle('database:getFolders', DataHandler.handleGetFolders);
 	ipcMain.handle('database:getFoldersNotEmpty', DataHandler.handleGetFoldersNotEmpty);
 	ipcMain.handle('database:getFiles', DataHandler.handleGetFiles);
@@ -75,6 +83,9 @@ function createHandlers() {
 app.on("ready", () => {
 	createHandlers();
 	createWindow();
+	app.on('activate', function () {
+		if (BrowserWindow.getAllWindows().length === 0) createWindow()
+	})
 });
 
 app.on('window-all-closed', () => {

@@ -3,6 +3,7 @@ const { shell } = require('electron');
 
 contextBridge.exposeInMainWorld('myAPI', {
 	openFile: () => ipcRenderer.invoke('dialog:openFile'),
+	updateFolderpathWithDialog: (folderId) => ipcRenderer.invoke('dialog:updateFolderpathWithDialog', folderId),
 	getFolders: () => ipcRenderer.invoke('database:getFolders'),
 	getFiles: () => ipcRenderer.invoke('database:getFiles'),
 	getFoldersNotEmpty: () => ipcRenderer.invoke('database:getFoldersNotEmpty'),
@@ -18,6 +19,10 @@ contextBridge.exposeInMainWorld('myAPI', {
 	saveViewToCollection: (viewMode, name, filterOptions) => ipcRenderer.invoke('database:saveViewToCollection', viewMode, name, filterOptions),
 	getCollection: () => ipcRenderer.invoke('database:getCollection'),
 	getAccent: () => ipcRenderer.invoke('system:getAccent'),
+
+	//TODO: (node:25420) MaxListenersExceededWarning: Possible EventEmitter memory leak detected
+	onAddAlert: (callback) => ipcRenderer.on('add-alert', callback),
+	onRemoveAlert: (callback) => ipcRenderer.on('remove-alert', callback),
 
 	// invoke in renderer like: window.myAPI.openFileInFolder('C:\\Users\\Johann\\Pictures\\Avatare\\nochzumachen\\gut als profile pic\\fE1bPC6.png')
 	openFileInFolder: (filePath) => shell.showItemInFolder(filePath),

@@ -1,4 +1,8 @@
+const fs = require("fs");
 const AbstractRepository = require("./AbstractRepository");
+const Alert = require("../Modules/Alert");
+const path = require("path");
+const AlertHandler = require("../Modules/AlertHandler");
 
 class FolderRepository extends AbstractRepository {
 	saveFolder(folder, parent = null) {
@@ -6,7 +10,7 @@ class FolderRepository extends AbstractRepository {
 		const db = this.openDatabase();
 		const saveFolderStmt = db.prepare("INSERT INTO folder(name, path, parent) VALUES (?,?,?)");
 		db.serialize(() => {
-			saveFolderStmt.run([folder.name, folder.path, parent], function (err) {
+			saveFolderStmt.run([folder.name, folder.path, parent], function(err) {
 				folder.files.forEach((file) => {
 					const saveFileStmt = db.prepare("INSERT INTO file(name, parent) VALUES (?,?)");
 					file.tags.map((tag) => {return {name: tag}});
@@ -34,6 +38,27 @@ class FolderRepository extends AbstractRepository {
 			});
 		});
 		saveFolderStmt.finalize();
+	}
+
+	updateFolder(folder, newPath) {
+		const self = this;
+		const updateFolderPath = function(id, newPath) {
+			const db = self.openDatabase();
+			db.serialize(() => {
+				const updateFolderStmt = db.prepare("UPDATE folder SET path = ? WHERE id = ?");
+				updateFolderStmt.run([newPath, id]);
+				updateFolderStmt.finalize();
+
+				let query = `SELECT * FROM folder WHERE parent = ?`;
+				let stmt = db.prepare(query, [id]);
+				stmt.all(function (err, rows) {
+					if (rows) rows.forEach(folder => updateFolderPath(folder.id, newPath + path.sep + folder.name));
+				});
+				stmt.finalize();
+			})
+			db.close();
+		}
+		updateFolderPath(folder, newPath);
 	}
 
 	getFolders() {
@@ -69,6 +94,8 @@ class FolderRepository extends AbstractRepository {
 		const db = this.openDatabase();
 		return new Promise((resolve, reject) => {
 			db.serialize(() => {
+//						let query1="UPDATE folder SET path = ? WHERE id = ?";
+//						let stmt1 = db.run(query1, ['C:\\Users\\Johann\\Desktop\\Testdir', 5])
 				var folders = [];
 				var files = [];
 				let query;
@@ -83,6 +110,12 @@ class FolderRepository extends AbstractRepository {
 				}
 				stmt.all((err, rows) => {
 					folders = rows
+					rows.forEach(row => {
+						if(!fs.existsSync(row.path)) {
+							//this.updateFolder(row, '');
+							AlertHandler.sendAlert(new Alert('Ordner ' + row.name + ' konnte nicht geladen werden (Falscher Pfad)', Alert.ERROR).withUrl(`myAPI:updateFolderpathWithDialog:${row.id}`, 'Update folderpath'))
+						}
+					})
 				});
 				stmt.finalize();
 				query = `SELECT f.id, f.name, f.parent, folder.path, group_concat(ftr.tag) as tags

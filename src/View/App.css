@@ -277,6 +277,73 @@
 	padding: var(--folder-highlight-border-thickness);
 }*/
 
+#alert-box {
+	position: fixed;
+	right: 10px;
+	top: 10px;
+	max-width: 400px;
+}
+
+#alert-box .alert {
+	display: flex;
+	align-items: center;
+	padding: 5px 10px;
+	justify-content: space-between;
+	gap: 5px;
+	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+	margin-bottom: 10px;
+	/* TODO: this is buggy, saved for later
+	animation: grow 0.5s ease-in forwards;
+	*/
+}
+
+#alert-box .clickable {
+	text-decoration: underline;
+	color: #2f2f2f;
+	cursor: pointer;
+	margin-left: .5rem;
+}
+
+/*
+@keyframes grow {
+	from {
+		opacity: 0;
+		transform: scale(0.8);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+*/
+
+#alert-box .alert.hide {
+	animation: shrink 0.2s ease-out forwards;
+}
+
+@keyframes shrink {
+	to {
+		opacity: 0;
+		transform: scale(0.8);
+	}
+}
+
+#alert-box .alert.error {
+	background: red;
+}
+
+#alert-box .alert.warning {
+	background: yellow;
+}
+
+#alert-box .alert.notice {
+	background: lightblue;
+}
+
+#alert-box .alert button {
+	height: fit-content;
+}
+
 #content {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(calc(var(--icon-width) + 1.2rem), 1fr));

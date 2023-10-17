@@ -1,5 +1,5 @@
 function Header({currentPath, setCurrentPath, viewMode}) {
-	console.log(currentPath)
+	//console.log(currentPath)
 	//let path = currentPath.map(p => p[1])
 
 	function setPathToIndex(index) {

@@ -8,6 +8,7 @@ import GalleryView from './Components/GalleryView';
 import TagView from './Components/TagView';
 import FolderView from './Components/FolderView';
 import ViewModeManager from './Services/ViewModeManager';
+import AlertBox from './Components/AlertBox';
 
 function App() {
 	/** currentPath: [[folderid, foldername], [folderid, foldername], ...] */
@@ -48,6 +49,7 @@ function App() {
 	}
 
 	return <div id="app">
+			<AlertBox />
 			<Header currentPath={currentPath} setCurrentPath={setCurrentPath} currentFolder={curFolder} tagFilter={tagFilter} viewMode={viewMode} />
 			<Sidebar setViewMode={setViewMode} addCurrentViewToCollection={addCurrentViewToCollection} />
 			{renderContent()}
