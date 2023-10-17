@@ -128,7 +128,7 @@ class FolderRepository extends AbstractRepository {
 				stmt = db.prepare(query, [folderId]);
 				stmt.all((err, rows) => {
 					files = this.buildFiles(rows);
-					let struct = this.buildFolderStructure(folders, files);
+					this.buildFolderStructure(folders, files);
 					resolve(folders)
 				});
 				stmt.finalize();
