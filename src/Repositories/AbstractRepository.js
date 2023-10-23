@@ -4,7 +4,7 @@ const config = require('../app.config');
 
 class AbstractRepository {
 	openDatabase() {
-		let db =  new sql.Database(path.resolve(__dirname, config.databasePath), (err) => {
+		let db =  new sql.Database(config.databasePath, (err) => {
 			if (err) {
 				console.log(err.message);
 			}

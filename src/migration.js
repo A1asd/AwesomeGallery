@@ -1,7 +1,8 @@
 const config = require('./app.config');
 const fs = require('fs');
-const path = require("path");
+const path = require('path');
 const sql = require("sqlite3");
+const { migrationList } = require('./Migrations/BaseMigration');
 
 const USAGE = `
 use as: node migration.js argument\n
@@ -14,7 +15,7 @@ function printUsage() {
 
 function initialDatabase() {
 	if (config.preloadDatabase) fs.unlinkSync("src/data/test.database.sqlite");
-	const db = new sql.Database(path.resolve(__dirname, config.testdatabasePath), (err) => {
+	const db = new sql.Database(config.testdatabasePath, (err) => {
 		if (err) {
 			console.log(err.message);
 		}
@@ -62,50 +63,11 @@ function initialDatabase() {
 			)
 		`)
 
-		db.run(`
-			CREATE TABLE IF NOT EXISTS collection (
-				id	INTEGER PRIMARY KEY
-			)
-		`)
-
 		db.close();
 
 		console.log('Database initialized')
 		//if (config.preloadDatabase) populateDatabase();
 	});
-}
-
-function migration1() {
-	const db = new sql.Database(path.resolve(__dirname, config.testdatabasePath), (err) => {
-		if (err) {
-			console.log(err.message);
-		}
-	});
-	console.log('Migrating first migration')
-
-	db.get("PRAGMA foreign_keys = ON");
-	db.serialize(() => {
-		db.run(`
-			ALTER TABLE folder
-				ADD COLUMN hidden INTEGER NOT NULL DEFAULT 0
-		`)
-
-		/*TODO: läuft noch nich*/
-		db.run(`
-			DROP TABLE collection
-		`)
-		db.run(`
-			CREATE TABLE collection (
-				id			INTEGER PRIMARY KEY,
-				viewmode	TEXT,
-				name		TEXT,
-				UNIQUE(viewmode, name)
-			)
-		`)
-
-		db.close();
-	})
-	console.log('Migration done')
 }
 
 function populateFolderDatabase() {
@@ -160,9 +122,22 @@ function populateDatabase() {
 	populateCollectionDatabase();
 }
 
+//TODO: add checkup with database for current version, so the system cannot trash the database and enable future automatic migrations
+function migrate(migrationClass, direction = 'up') {
+	try {
+		var cl = require(path.join(__dirname, 'Migrations' + path.sep + migrationClass))
+		cl = new cl()
+		if (direction === 'up') cl.up()
+		else if (direction === 'down') cl.down()
+		else {console.log('Valid arguments for direction are up or down')}
+	} catch(e) {
+		console.log('Choose a migration from this list', migrationList)
+	}
+}
+
 switch (process.argv[2]) {
 	case 'init': initialDatabase(); break;
 	case 'mockdata': populateDatabase(); break;
-	case 'migrate': migration1(); break;
+	case 'migrate': migrate(process.argv[3], process.argv[4]); break;
 	default: printUsage();
 }

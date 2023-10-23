@@ -6,8 +6,8 @@ const config = {
 	openDevTools: false,
 
 	preloadDatabase: false,
-	databasePath: '../data/database.sqlite',
-	testdatabasePath: './Tests/data/test.database.sqlite',
+	databasePath: path.join(__dirname, 'data/database.sqlite'),
+	testdatabasePath: path.join(__dirname, 'Tests/data/test.database.sqlite'),
 }
 
 module.exports = config;

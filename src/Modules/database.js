@@ -1,11 +1,10 @@
 const sql = require("sqlite3");
-const path = require("path");
 const fs = require('fs');
 const config = require('../app.config');
 
 function initDatabase() {
 	if (config.preloadDatabase) fs.unlinkSync("src/data/database.sqlite");
-	const db = new sql.Database(path.resolve(__dirname, config.databasePath), (err) => {
+	const db = new sql.Database(config.databasePath, (err) => {
 		if (err) {
 			console.log(err.message);
 		}
