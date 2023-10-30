@@ -23,10 +23,6 @@ function App() {
 	/** store current folder for gallery view */
 	const [curFolder, setCurFolder] = useState(null);
 
-	function renderDetails(file) {
-		if (file) return <Details details={file[0]} detailType={file[1]} setFile={setFile} />
-	}
-
 	function addCurrentViewToCollection(name) {
 		switch (viewMode) {
 			case ViewModeManager.FOLDER: window.myAPI.saveViewToCollection(viewMode, name, currentPath);break;
@@ -49,13 +45,13 @@ function App() {
 	}
 
 	return <div id="app">
-			<AlertBox />
-			<Header currentPath={currentPath} setCurrentPath={setCurrentPath} currentFolder={curFolder} tagFilter={tagFilter} viewMode={viewMode} />
-			<Sidebar setViewMode={setViewMode} addCurrentViewToCollection={addCurrentViewToCollection} />
-			{renderContent()}
-			{renderDetails(file)}
-			<Footer folderStats={folderStats} />
-		</div>;
+		<AlertBox />
+		<Header currentPath={currentPath} setCurrentPath={setCurrentPath} currentFolder={curFolder} tagFilter={tagFilter} viewMode={viewMode} />
+		<Sidebar setViewMode={setViewMode} addCurrentViewToCollection={addCurrentViewToCollection} setFolderStats={setFolderStats} setTagFilter={setTagFilter} setCurrentPath={setCurrentPath} />
+		{renderContent()}
+		{file ? <Details details={file[0]} detailType={file[1]} setFile={setFile} /> : null}
+		<Footer folderStats={folderStats} />
+	</div>;
 }
 
 export default App;
