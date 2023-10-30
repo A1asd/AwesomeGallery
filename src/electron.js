@@ -78,6 +78,9 @@ function createHandlers() {
 	ipcMain.handle('database:saveViewToCollection', (event, viewMode, name, filterOptions) => {
 		DataHandler.handleSaveViewToCollection(viewMode, name, filterOptions)
 	});
+	ipcMain.handle('database:updateCollection', (event, collection) => {
+		DataHandler.handleUpdateCollection(collection)
+	});
 }
 
 app.on("ready", () => {

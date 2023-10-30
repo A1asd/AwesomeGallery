@@ -18,6 +18,7 @@ contextBridge.exposeInMainWorld('myAPI', {
 	deleteTag: (tagId, fileId) => ipcRenderer.invoke('database:deleteTag', tagId, fileId),
 	saveViewToCollection: (viewMode, name, filterOptions) => ipcRenderer.invoke('database:saveViewToCollection', viewMode, name, filterOptions),
 	getCollection: () => ipcRenderer.invoke('database:getCollection'),
+	updateCollection: (collection) => ipcRenderer.invoke('database:updateCollection', collection),
 	getAccent: () => ipcRenderer.invoke('system:getAccent'),
 
 	//TODO: (node:25420) MaxListenersExceededWarning: Possible EventEmitter memory leak detected

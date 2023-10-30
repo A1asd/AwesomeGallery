@@ -89,6 +89,10 @@ class DataHandler {
 		return collectionRepository.getCollection();
 	}
 
+	async handleUpdateCollection(collection) {
+		collectionRepository.updateCollection(collection);
+	}
+
 	getDirectories(srcpath) {
 		return fs.readdirSync(srcpath, { withFileTypes:true })
 			.map(dirent => path.join(srcpath, dirent.name))
