@@ -44,7 +44,7 @@ function FolderView({setFile, currentPath, setCurrentPath, setFolderStats, setDe
 			return <FolderSelector resetDirs={resetDirs} />
 		}
 	}
-	
+
 	function renderBackButton() {
 		if (currentPath.length !== 0) {
 			return <FolderElement
@@ -57,10 +57,10 @@ function FolderView({setFile, currentPath, setCurrentPath, setFolderStats, setDe
 
 	return <section id="content" className={'folder-view' + (!detailsVisible ? ' details-invisible' : '')}>
 		{renderBackButton()}
-		{currentFolders.map((folderElement, index) => 
+		{currentFolders.map((folderElement, index) =>
 			<FolderElement key={index} type={'folders'} folderId={folderElement.id} folderElement={folderElement.name} folder={folderElement} setFile={setFile} setDetailType={setDetailType} customFunc={() => changeDirFunc(folderElement)} />
 		)}
-		{currentFiles.map((file, index) => 
+		{currentFiles.map((file, index) =>
 			<FileElement key={index} setFile={setFile} setDetailType={setDetailType} file={file} />
 		)}
 		{renderFolderSelector()}

@@ -33,7 +33,7 @@ function FolderElement({type, folderElement, customFunc, folder, setFile}) {
 
 	if (type === 'back') {
 		return <div className="folder" onClick={(e) => handleClickEvent(e)}>
-			<img className="thumbnail" src={backSVG} alt="folder" />   
+			<img className="thumbnail" src={backSVG} alt="folder" />
 			<span className="folder-title">{folderElement}</span>
 		</div>
 	}
@@ -41,7 +41,7 @@ function FolderElement({type, folderElement, customFunc, folder, setFile}) {
 	return <div className="folder" onClick={(e) => handleClickEvent(e)}>
 		<div className="folder-wrapper full">
 			<img class="folder-wrapper-front" src={folderFront} alt="alt text" />
-			{previewImages.map(previewImage => 
+			{previewImages.map(previewImage =>
 				<img className="folder-thumbnail" src={previewImage.path + '/' + previewImage.name} alt="folder" />
 			)}
 		</div>

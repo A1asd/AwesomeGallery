@@ -23,7 +23,7 @@ function GalleryView({setFile, curFolder, setCurFolder, detailsVisible}) {
 				<span>{gallery.name}</span>
 			</div>
 		)}
-		{content.map((file) => 
+		{content.map((file) =>
 			<FileElement file={file} setFile={setFile} />
 		)}
 	</section>

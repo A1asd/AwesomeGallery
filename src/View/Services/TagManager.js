@@ -8,7 +8,7 @@ class TagManager {
 	constructor() {
 		this.count = new Array(this.tags.length).fill(0);
 	}
-	
+
 	getName(index) {
 		return this.tags[index];
 	}
@@ -16,7 +16,7 @@ class TagManager {
 	getCount(index) {
 		return this.count[index];
 	}
-	
+
 	incrementCount(index) {
 		this.count[index] += 1;
 	}

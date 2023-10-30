@@ -21,7 +21,7 @@ class TagRepository extends AbstractRepository {
 		});
 		return promise;
 	};
-	
+
 	getTagsByFolder(folderId) {
 		const db = this.openDatabase()
 		new Promise((resolve, reject) => {
