@@ -19,16 +19,16 @@ class BaseMigration {
 	updateVersion() {
 		const migrationStmt = this.db.prepare(`
 			UPDATE app SET value = ? WHERE field = "db_version"
-		`)
-		migrationStmt.run([this.constructor.name.split('Migration')[1]])
+		`);
+		migrationStmt.run([this.constructor.name.split('Migration')[1]]);
 		migrationStmt.finalize();
 	}
 
 	revertVersion() {
 		const migrationStmt = this.db.prepare(`
 			UPDATE app SET value = ? WHERE field = "db_version"
-		`)
-		migrationStmt.run([migrationList[migrationList.indexOf(this.constructor.name) - 1].split('Migration')[1]])
+		`);
+		migrationStmt.run([migrationList[migrationList.indexOf(this.constructor.name) - 1].split('Migration')[1]]);
 		migrationStmt.finalize();
 	}
 
@@ -41,12 +41,12 @@ class BaseMigration {
 	}
 
 	up() {
-		this.error('Missing function: up()')
+		this.error('Missing function: up()');
 		return 0;
 	}
 
 	down() {
-		this.error('Missing function: down()')
+		this.error('Missing function: down()');
 		return 0;
 	}
 }
@@ -54,4 +54,4 @@ class BaseMigration {
 module.exports = {
 	BaseMigration,
 	migrationList
-}
+};

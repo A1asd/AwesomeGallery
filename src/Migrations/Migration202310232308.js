@@ -1,6 +1,6 @@
 const { BaseMigration } = require("./BaseMigration");
 
-class Migration2308231323 extends BaseMigration {
+module.exports = class Migration202310232308 extends BaseMigration {
 	up() {
 		this.log('Migrating up')
 
@@ -15,8 +15,8 @@ class Migration2308231323 extends BaseMigration {
 				CREATE TABLE collection (
 					id			INTEGER PRIMARY KEY,
 					viewmode	TEXT,
-					name		TEXT,
-					UNIQUE(viewmode, name)
+					filter		TEXT,
+					UNIQUE(viewmode, filter)
 				)
 			`)
 
@@ -26,9 +26,8 @@ class Migration2308231323 extends BaseMigration {
 					value	TEXT
 				)
 			`)
-			this.db.run(`
-				INSERT INTO app (field, value) VALUES ("db_version", 2308231323)
-			`)
+
+			this.updateVersion();
 
 			this.db.close();
 		})
@@ -58,5 +57,3 @@ class Migration2308231323 extends BaseMigration {
 		this.log('Migration done')
 	}
 }
-
-module.exports = Migration2308231323

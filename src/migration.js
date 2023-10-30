@@ -35,9 +35,9 @@ function initialDatabase() {
 						ON DELETE CASCADE
 						ON UPDATE NO ACTION
 			)
-		`)
+		`);
 
-		db.run(`INSERT INTO folder(name,path) VALUES ("test","c:/te/test")`)
+		db.run(`INSERT INTO folder(name,path) VALUES ("test","c:/te/test")`);
 
 		db.run(`
 			CREATE TABLE IF NOT EXISTS file (
@@ -49,7 +49,7 @@ function initialDatabase() {
 						ON DELETE CASCADE
 						ON UPDATE NO ACTION
 			)
-		`)
+		`);
 
 		db.run(`
 			CREATE TABLE IF NOT EXISTS fileTagRelation (
@@ -61,11 +61,11 @@ function initialDatabase() {
 						ON DELETE CASCADE
 						ON UPDATE NO ACTION
 			)
-		`)
+		`);
 
 		db.close();
 
-		console.log('Database initialized')
+		console.log('Database initialized');
 		//if (config.preloadDatabase) populateDatabase();
 	});
 }
@@ -101,7 +101,7 @@ function populateTagDatabase() {
 }
 
 function populateCollectionDatabase() {
-	const db = this.openDatabase()
+	const db = this.openDatabase();
 	const fileStmt = db.prepare("INSERT INTO collection(folder) VALUES (?)");
 	//[['cute.png',1],['spoopy.png',2]].forEach(file => {
 	//	fileStmt.run([file[0], file[1]]);
@@ -122,22 +122,82 @@ function populateDatabase() {
 	populateCollectionDatabase();
 }
 
+function getDateString() {
+	let d = new Date();
+	let dateString = d.getUTCFullYear().toString() + prefixZero(d.getUTCMonth()+1) + prefixZero(d.getUTCDate()) + prefixZero(d.getUTCHours()) + prefixZero(d.getUTCMinutes());
+	return dateString
+}
+
+function prefixZero(dateString) {
+	return ('0' + dateString).slice(-2);
+}
+
 //TODO: add checkup with database for current version, so the system cannot trash the database and enable future automatic migrations
-function migrate(migrationClass, direction = 'up') {
+function migrateUp(migrationClass) {
 	try {
-		var cl = require(path.join(__dirname, 'Migrations' + path.sep + migrationClass))
-		cl = new cl()
-		if (direction === 'up') cl.up()
-		else if (direction === 'down') cl.down()
-		else {console.log('Valid arguments for direction are up or down')}
+		var cl = require(path.join(__dirname, 'Migrations' + path.sep + migrationClass));
+		cl = new cl();
+		cl.up();
 	} catch(e) {
-		console.log('Choose a migration from this list', migrationList)
+		console.log(e);
+		console.log('Choose a migration from this list', migrationList);
 	}
+}
+
+function migrateDown(migrationClass) {
+	try {
+		var cl = require(path.join(__dirname, 'Migrations' + path.sep + migrationClass));
+		cl = new cl();
+		cl.down();
+	} catch(e) {
+		console.log(e);
+		console.log('Choose a migration from this list', migrationList);
+	}
+}
+
+function migrateCreate() {
+	const dateString = getDateString();
+	try {
+		let skeletonPath = path.join(__dirname, 'Migrations' + path.sep + 'MigrationSkeleton.js');
+		let newPath = path.join(__dirname, 'Migrations' + path.sep + 'Migration' + dateString + '.js');
+		let baseMigrationPath = path.join(__dirname, 'Migrations' + path.sep + 'BaseMigration.js');
+		fs.copyFile(skeletonPath, newPath, (err) => {
+			if (err) return console.log(err);
+			fs.readFile(newPath, 'utf-8', (err, data) => {
+				if (err) return console.log(err);
+				let result = data.replace('Skeleton', dateString);
+				fs.writeFile(newPath, result, (err) => {
+					if (err) console.log(err);
+				});
+			});
+			//TODO: this only works for windows because of new lines
+			let searchString = /(const migrationList = \[(\r\n.*)*)(\r\n\])/gm;
+			let replaceString = "$1\n\t'Migration" + dateString + "',$3";
+			fs.readFile(baseMigrationPath, 'utf-8', (err, data) => {
+				if (err) return console.log(err);
+				let result = data.replace(searchString, replaceString);
+				fs.writeFile(baseMigrationPath, result, (err) => {
+					if (err) return console.log(err);
+				});
+			});
+		});
+
+	} catch(e) {
+		console.log(e);
+		console.log('Choose a migration from this list', migrationList);
+	}
+}
+
+function runCommand() {
+	//TODO
 }
 
 switch (process.argv[2]) {
 	case 'init': initialDatabase(); break;
 	case 'mockdata': populateDatabase(); break;
-	case 'migrate': migrate(process.argv[3], process.argv[4]); break;
+	case 'migrate:up': migrateUp(process.argv[3], process.argv[4]); break;
+	case 'migrate:down': migrateDown(process.argv[3], process.argv[4]); break;
+	case 'migrate:create': migrateCreate(); break;
+	case 'run:command': runCommand(); break;
 	default: printUsage();
 }
