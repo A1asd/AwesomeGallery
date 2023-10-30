@@ -93,6 +93,10 @@ class DataHandler {
 		collectionRepository.updateCollection(collection);
 	}
 
+	async handleDeleteCollection(collection) {
+		collectionRepository.deleteCollection(collection);
+	}
+
 	getDirectories(srcpath) {
 		return fs.readdirSync(srcpath, { withFileTypes:true })
 			.map(dirent => path.join(srcpath, dirent.name))

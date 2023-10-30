@@ -81,6 +81,9 @@ function createHandlers() {
 	ipcMain.handle('database:updateCollection', (event, collection) => {
 		DataHandler.handleUpdateCollection(collection)
 	});
+	ipcMain.handle('database:deleteCollection', (event, collection) => {
+		DataHandler.handleDeleteCollection(collection)
+	});
 }
 
 app.on("ready", () => {

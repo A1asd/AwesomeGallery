@@ -19,6 +19,7 @@ contextBridge.exposeInMainWorld('myAPI', {
 	saveViewToCollection: (viewMode, name, filterOptions) => ipcRenderer.invoke('database:saveViewToCollection', viewMode, name, filterOptions),
 	getCollection: () => ipcRenderer.invoke('database:getCollection'),
 	updateCollection: (collection) => ipcRenderer.invoke('database:updateCollection', collection),
+	deleteCollection: (collection) => ipcRenderer.invoke('database:deleteCollection', collection),
 	getAccent: () => ipcRenderer.invoke('system:getAccent'),
 
 	//TODO: (node:25420) MaxListenersExceededWarning: Possible EventEmitter memory leak detected
