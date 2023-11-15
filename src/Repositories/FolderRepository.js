@@ -3,18 +3,21 @@ const AbstractRepository = require("./AbstractRepository");
 const Alert = require("../Modules/Alert");
 const path = require("path");
 const AlertHandler = require("../Modules/AlertHandler");
+const ChecksumService = require("../Modules/ChecksumService");
 
 class FolderRepository extends AbstractRepository {
 	saveFolder(folder, parent = null) {
 		const self = this;
 		const db = this.openDatabase();
 		const saveFolderStmt = db.prepare("INSERT INTO folder(name, path, parent) VALUES (?,?,?)");
+		let checksumService = new ChecksumService();
 		db.serialize(() => {
 			saveFolderStmt.run([folder.name, folder.path, parent], function(err) {
 				folder.files.forEach((file) => {
-					const saveFileStmt = db.prepare("INSERT INTO file(name, parent) VALUES (?,?)");
+					//TODO: use FileRepository
+					const saveFileStmt = db.prepare("INSERT INTO file(name, parent, md5checksum) VALUES (?,?,?)");
 					file.tags.map((tag) => {return {name: tag}});
-					saveFileStmt.run(file.name, this.lastID);
+					saveFileStmt.run(file.name, this.lastID, checksumService.getChecksum(folder.path + path.sep + file.name));
 					saveFileStmt.finalize();
 				});
 				folder.folders.forEach((folder) => self.saveFolder(folder, this.lastID));
@@ -24,21 +27,23 @@ class FolderRepository extends AbstractRepository {
 		db.close()
 	}
 
-	saveFolderRecursive(database, folder, parent = null) {
-		const saveFolderStmt = database.prepare("INSERT INTO folder(name, path, parent) VALUES (?,?,?)");
-		database.serialize(() => {
-			saveFolderStmt.run([folder.name, folder.path, parent], function (err) {
-				folder.files.forEach((file) => {
-					const saveFileStmt = database.prepare("INSERT INTO file(name, parent) VALUES (?,?)");
-					file.tags.map((tag) => {return {name: tag}});
-					saveFileStmt.run(file.name, this.lastID);
-					saveFileStmt.finalize();
-				});
-				folder.folders.forEach((folder) => this.saveFolder(folder, this.lastID));
-			});
-		});
-		saveFolderStmt.finalize();
-	}
+	//saveFolderRecursive(database, folder, parent = null) {
+	//	const saveFolderStmt = database.prepare("INSERT INTO folder(name, path, parent) VALUES (?,?,?)");
+	//	database.serialize(() => {
+	//		saveFolderStmt.run([folder.name, folder.path, parent], function (err) {
+	//			folder.files.forEach((file) => {
+	//				console.log('saving folder recursive')
+	//				console.log(file, folder.path)
+	//				const saveFileStmt = database.prepare("INSERT INTO file(name, parent) VALUES (?,?)");
+	//				file.tags.map((tag) => {return {name: tag}});
+	//				saveFileStmt.run(file.name, this.lastID);
+	//				saveFileStmt.finalize();
+	//			});
+	//			folder.folders.forEach((folder) => this.saveFolder(folder, this.lastID));
+	//		});
+	//	});
+	//	saveFolderStmt.finalize();
+	//}
 
 	updateFolder(folder, newPath) {
 		const self = this;
