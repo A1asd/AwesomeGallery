@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, systemPreferences } = require('electron');
+const { app, BrowserWindow, ipcMain, systemPreferences, Menu, shell } = require('electron');
 const path = require("path");
 const initDatabase = require("./Modules/database");
 const DataHandler = require('./Modules/DataHandler');
@@ -28,6 +28,7 @@ function createWindow() {
 		},
 	});
 
+	initiateContextMenus(mainWindow);
 	mainWindow.maximize();
 
 	if (config.buildHTML) mainWindow.loadFile(config.buildHTMLPath);
@@ -38,6 +39,81 @@ function createWindow() {
 		//TODO: make a alert interface
 		//mainWindow.webContents.send('add-alert', new Alert('started succesfully but with minor hiccups', Alert.NOTICE))
 	});
+}
+
+function testLog(item) {
+	console.log(item)
+}
+
+function initiateContextMenus(mainWindow) {
+	ipcMain.on('show-image-context-menu', (event, file) => {
+		const defaultTagOptions = [
+			{ label: 'Analyze Picture' },
+			{ label: 'Manage Tags' },
+			{ type: 'separator' },
+		];
+		const tagButtons = file.tags.map(tag => {
+			return {
+				label: tag.name,
+				type: 'checkbox',
+				checked: true,
+				click: () => {
+					console.log('toggle tag');
+					this.checked = false;
+				},
+			}
+		});
+		const template = [
+			{
+				label: 'Test (File ' + file.id + ')',
+				click: () => {
+					testLog(file);
+					event.sender.send('context-menu-command', 'menu-item-1')
+				},
+			},
+			{ label: 'Move' },
+			{ label: 'Copy' },
+			{ label: 'Copy Path' },
+			{ label: 'Rename' },
+			{ label: 'Delete', enabled: false },
+			{ type: 'separator' },
+			{ label: 'Tags', type: 'submenu', submenu: defaultTagOptions.concat(tagButtons) },
+			{ type: 'separator' },
+			{ label: 'Open', click: () => {
+				shell.openPath(file.path + path.sep + file.name);
+			} },
+			{ label: 'Open in Explorer', click: () => {
+				shell.showItemInFolder(file.path + path.sep + file.name);
+			} },
+			{ label: 'Properties' },
+		];
+		const menu = Menu.buildFromTemplate(template)
+		menu.popup(mainWindow)//BrowserWindow.fromWebContents(event.sender))
+	});
+
+	ipcMain.on('show-folder-context-menu', (event, folder) => {
+		const template = [
+			{
+				label: 'Test (Folder ' + folder.id + ')',
+				click: () => {
+					testLog(folder);
+					event.sender.send('context-menu-command', 'menu-item-1')
+				}
+			},
+			{ label: 'Move', role: 'normal' },
+			{ label: 'Copy', role: 'normal' },
+			{ label: 'Copy Path', role: 'normal' },
+			{ label: 'Rename', role: 'normal' },
+			{ label: 'Delete', role: 'normal' },
+			{ type: 'separator' },
+			{ label: 'Manage Tags', role: 'normal' },
+			{ type: 'separator' },
+			{ label: 'Open with...', role: 'normal' },
+			{ label: 'Open in Explorer', role: 'normal' },
+		];
+		const menu = Menu.buildFromTemplate(template)
+		menu.popup(mainWindow)//BrowserWindow.fromWebContents(event.sender))
+	})
 }
 
 function createHandlers() {
