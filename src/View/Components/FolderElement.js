@@ -31,6 +31,11 @@ function FolderElement({type, folderElement, customFunc, folder, setFile}) {
 		}
 	} //onClick={handleClickEvent}
 
+	function invokeContextMenu(event) {
+		event.preventDefault();
+		window.myAPI.showFolderContextMenu(folder);
+	}
+
 	if (type === 'back') {
 		return <div className="folder" onClick={(e) => handleClickEvent(e)}>
 			<img className="thumbnail" src={backSVG} alt="folder" />
@@ -38,7 +43,7 @@ function FolderElement({type, folderElement, customFunc, folder, setFile}) {
 		</div>
 	}
 
-	return <div className="folder" onClick={(e) => handleClickEvent(e)}>
+	return <div className="folder" onContextMenu={(e) => invokeContextMenu(e)} onClick={(e) => handleClickEvent(e)}>
 		<div className="folder-wrapper full">
 			<img class="folder-wrapper-front" src={folderFront} alt="alt text" />
 			{previewImages.map(previewImage =>

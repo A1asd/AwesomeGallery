@@ -192,12 +192,17 @@ function runCommand() {
 	//TODO
 }
 
+function test(arg1,arg2) {
+	console.log(arg1,arg2)
+}
+
 switch (process.argv[2]) {
 	case 'init': initialDatabase(); break;
 	case 'mockdata': populateDatabase(); break;
 	case 'migrate:up': migrateUp(process.argv[3], process.argv[4]); break;
 	case 'migrate:down': migrateDown(process.argv[3], process.argv[4]); break;
 	case 'migrate:create': migrateCreate(); break;
-	case 'run:command': runCommand(); break;
+	case 'run:command': runCommand(process.argv[3], process.argv[4]); break;
+	case 'test': test(process.argv[3], process.argv[4]); break;
 	default: printUsage();
 }

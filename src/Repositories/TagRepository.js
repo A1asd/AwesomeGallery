@@ -11,7 +11,7 @@ class TagRepository extends AbstractRepository {
 				let stmt = db.prepare(query);
 				stmt.all((err, rows) => {
 					/**
-					 * [ { tag: 'name', total: int}, ... ]
+					 * [ {tag: 'name', total: int}, ... ]
 					 */
 					resolve(rows)
 				});

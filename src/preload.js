@@ -22,6 +22,9 @@ contextBridge.exposeInMainWorld('myAPI', {
 	deleteCollection: (collection) => ipcRenderer.invoke('database:deleteCollection', collection),
 	getAccent: () => ipcRenderer.invoke('system:getAccent'),
 
+	showImageContextMenu: (file) => ipcRenderer.send('show-image-context-menu', file),
+	showFolderContextMenu: (folder) => ipcRenderer.send('show-folder-context-menu', folder),
+
 	//TODO: (node:25420) MaxListenersExceededWarning: Possible EventEmitter memory leak detected
 	onAddAlert: (callback) => ipcRenderer.on('add-alert', callback),
 	onRemoveAlert: (callback) => ipcRenderer.on('remove-alert', callback),

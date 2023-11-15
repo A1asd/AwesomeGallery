@@ -23,13 +23,15 @@
     "web:start": "react-scripts start",
     "ef:start": "electron-forge start",
     "ef:package": "electron-forge package",
-    "ef:make": "electron-forge make"
+    "ef:make": "electron-forge make",
+    "migrate": "node src/migration.js"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "electron": "^27.0.2"
   },
   "dependencies": {
+    "exif": "^0.6.0",
     "react-dom": "^18.2.0",
     "react-scripts": "^5.0.1",
     "sqlite3": "^5.1.6"

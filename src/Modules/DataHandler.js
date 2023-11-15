@@ -14,6 +14,10 @@ const tagRepository = new TagRepository();
 const collectionRepository = new CollectionRepository();
 
 class DataHandler {
+	constructor() {
+		this.handleFileOpen = this.handleFileOpen.bind(this)
+		this.getDirectoriesRecursive = this.getDirectoriesRecursive.bind(this)
+	}
 	async handleFileOpen() {
 		const { canceled, filePaths } = await dialog.showOpenDialog({
 			properties: ['openDirectory'],

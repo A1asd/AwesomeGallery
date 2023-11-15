@@ -42,7 +42,12 @@ function Sidebar({setViewMode, addCurrentViewToCollection, setCurFolder, setTagF
 		}
 	}
 
-	return <section id="sidebar">
+	function invokeContextMenu(event) {
+		event.preventDefault();
+		window.myAPI.showFolderContextMenu();
+	}
+
+	return <section id="sidebar" onContextMenu={(e) => invokeContextMenu(e)}>
 		<h3>Workspaces (Viewmodes)</h3>
 		{struct.views.map((view) =>
 			<div onClick={() => {setViewMode(view)}} >
