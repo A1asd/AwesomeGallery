@@ -9,6 +9,7 @@ import TagView from './Components/TagView';
 import FolderView from './Components/FolderView';
 import ViewModeManager from './Services/ViewModeManager';
 import AlertBox from './Components/AlertBox';
+import Viewer from './Components/Viewer';
 
 function App() {
 	/** currentPath: [[folderid, foldername], [folderid, foldername], ...] */
@@ -51,6 +52,7 @@ function App() {
 		{renderContent()}
 		{file ? <Details details={file[0]} detailType={file[1]} setFile={setFile} /> : null}
 		<Footer folderStats={folderStats} />
+		<Viewer file={file}></Viewer>
 	</div>;
 }
 

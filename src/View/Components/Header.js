@@ -1,3 +1,5 @@
+import Search from "./Search";
+
 function Header({currentPath, setCurrentPath, viewMode}) {
 	//console.log(currentPath)
 	//let path = currentPath.map(p => p[1])
@@ -12,6 +14,7 @@ function Header({currentPath, setCurrentPath, viewMode}) {
 		<span onClick={() => setCurrentPath([])}>Gallery</span>://{currentPath.map((p, index) => {
 			return <span onClick={() => setPathToIndex(index)}>{p[1]}/</span>;
 		})}
+		<Search></Search>
 	</section>
 }
 

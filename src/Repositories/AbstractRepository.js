@@ -1,6 +1,7 @@
 const sql = require("sqlite3");
-const path = require("path");
 const config = require('../app.config');
+const path = require("path");
+const { ExifImage } = require("exif");
 
 class AbstractRepository {
 	openDatabase() {
@@ -15,9 +16,18 @@ class AbstractRepository {
 
 	buildFiles(files) {
 		return files.map((file) => {
-			if (file.tags) file.tags = file.tags.split(',').map((tag) => {return {name: tag}});
+			if (file.tags) file.tags = file.tags.split(',').map((tag) => {
+				return {
+					name: tag,
+				};
+			});
 			else file.tags = [];
-			return file;
+			new ExifImage(file.path + path.sep + file.name, (err, data) => {
+				if (err) return;
+				console.log(file.path + path.sep + file.name);
+				file.exif = data;
+			})
+			return file
 		});
 	}
 }

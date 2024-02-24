@@ -2,6 +2,7 @@ import Tag from "./Tag";
 import { useState, useEffect } from 'react';
 import TagSelector from "./TagSelector";
 import folderImage from "../../assets/img/folders.svg";
+import Detail from "./Detail";
 
 function Details({details, detailType, setFile}) {
 	const [tags, setTags] = useState([]);
@@ -25,8 +26,10 @@ function Details({details, detailType, setFile}) {
 		if (detailType === 'file') {
 			// TODO: total tag count ist noch ein bisschen wonky. könnte man vllt in den datenbanken verbessern
 			return <div>
-				<div>{details.name}</div>
 				<img id="details-image" src={details.path+ '/' + details.name} alt={details.name}/>
+				<div>{details.name}</div>
+				<Detail label={'path'} value={details.path}></Detail>
+				<Detail label={'type'} value={details.path}></Detail>
 				<div class="tag-wrapper">
 				{details.tags.map((tag, index) =>
 					<Tag key={index} tag={tag} count={tags.filter(t => t.tag === tag.name)[0]} removeTag={removeTag} />
