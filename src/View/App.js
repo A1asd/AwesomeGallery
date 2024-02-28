@@ -9,12 +9,14 @@ import TagView from './Components/TagView';
 import FolderView from './Components/FolderView';
 import ViewModeManager from './Services/ViewModeManager';
 import AlertBox from './Components/AlertBox';
-import Viewer from './Components/Viewer';
+import Viewer from './Components/Viewer/Viewer';
 
 function App() {
 	/** currentPath: [[folderid, foldername], [folderid, foldername], ...] */
 	const [currentPath, setCurrentPath] = useState([]);
 	const [file, setFile] = useState(null);
+	const [viewingGroup, setViewingGroup] = useState([]);
+	const [viewerFile, setViewerFile] = useState(0);
 	/** viewMode: folders OR tags OR gallery */
 	const [viewMode, setViewMode ] = useState(ViewModeManager.FOLDER);
 	/** folderStats: [foldercount, filecount] */
@@ -35,11 +37,11 @@ function App() {
 
 	function renderContent() {
 		if (viewMode === ViewModeManager.FOLDER) {
-			return <FolderView currentPath={currentPath} setCurrentPath={setCurrentPath} setFile={setFile} setFolderStats={setFolderStats} detailsVisible={!!file} />
+			return <FolderView currentPath={currentPath} setCurrentPath={setCurrentPath} setFile={setFile} setViewerFile={setViewerFile} setViewingGroup={setViewingGroup} setFolderStats={setFolderStats} detailsVisible={!!file} />
 		} else if (viewMode === ViewModeManager.TAGS) {
-			return <TagView setFile={setFile} tagFilter={tagFilter} setTagFilter={setTagFilter} detailsVisible={!!file} />
+			return <TagView setFile={setFile} setViewerFile={setViewerFile} tagFilter={tagFilter} setTagFilter={setTagFilter} detailsVisible={!!file} />
 		} else if (viewMode === ViewModeManager.GALLERY) {
-			return <GalleryView setFile={setFile} curFolder={curFolder} setCurFolder={setCurFolder} detailsVisible={!!file} />
+			return <GalleryView setFile={setFile} setViewerFile={setViewerFile} curFolder={curFolder} setCurFolder={setCurFolder} detailsVisible={!!file} />
 		} else {
 			return <div>nothing to show</div>
 		}
@@ -52,7 +54,7 @@ function App() {
 		{renderContent()}
 		{file ? <Details details={file[0]} detailType={file[1]} setFile={setFile} /> : null}
 		<Footer folderStats={folderStats} />
-		<Viewer file={file}></Viewer>
+		<Viewer startingFileNumber={viewerFile} setStartingFileNumber={setViewerFile} viewingGroup={viewingGroup} setViewingGroup={setViewingGroup}></Viewer>
 	</div>;
 }
 

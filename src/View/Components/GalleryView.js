@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import FileElement from "./FileElement";
 import foldersImage from "../../assets/img/folders.svg";
 
-function GalleryView({setFile, curFolder, setCurFolder, detailsVisible}) {
+function GalleryView({setFile, setViewerFile, curFolder, setCurFolder, detailsVisible}) {
 	const [galleries, setGalleries] = useState([]);
 	const [content, setContent] = useState([]);
 
@@ -24,7 +24,7 @@ function GalleryView({setFile, curFolder, setCurFolder, detailsVisible}) {
 			</div>
 		)}
 		{content.map((file) =>
-			<FileElement file={file} setFile={setFile} />
+			<FileElement file={file} setFile={setFile} setViewerFile={setViewerFile} />
 		)}
 	</section>
 }

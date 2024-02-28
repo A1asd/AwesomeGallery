@@ -1,0 +1,62 @@
+#viewer {
+	display: grid;
+	grid-template-areas:
+		'. top topright'
+		'left image right'
+		'. bot .';
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,.8);
+	position: absolute;
+	z-index: 100;
+	grid-template-columns: 6% 88% 6%;
+	grid-template-rows: 4% 90% 6%;
+	align-items: center;
+	justify-items: center;
+}
+
+#viewer .image-slider {
+	grid-area: image;
+	max-height: 100%;
+}
+
+#viewer .image-name {
+	grid-area: top;
+	color: white;
+}
+
+#viewer .window-controls {
+	grid-area: topright;
+	display: flex;
+	justify-content: space-evenly;
+	width: 100%;
+}
+
+#viewer .window-controls img {
+	cursor: pointer;
+	width: 20px;
+	height: auto;
+	padding: 3px;
+}
+
+#viewer .prev-image {
+	grid-area: left;
+	transform: scale(-1);
+}
+
+#viewer .next-image {
+	grid-area: right;
+}
+
+#viewer .viewer-controls {
+	border-radius: 5px;
+	background: rgba(255,255,255,.7);
+	padding: 25px 15px;
+	cursor: pointer;
+	height: 20px;
+}
+
+#viewer .image-controls {
+	grid-area: bot;
+}
+

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import FileElement from "./FileElement";
 import tagImage from '../../assets/img/tags.svg';
 
-function TagView({setFile, tagFilter, setTagFilter, detailsVisible}) {
+function TagView({setFile, setViewerFile, tagFilter, setTagFilter, detailsVisible}) {
 	const [tags, setTags] = useState([]);
 	const [currentFiles, setCurrentFiles] = useState([]);
 
@@ -40,7 +40,7 @@ function TagView({setFile, tagFilter, setTagFilter, detailsVisible}) {
 		})}
 		</div>
 		{currentFiles.map(file =>
-			<FileElement setFile={setFile} file={file} />
+			<FileElement setFile={setFile} setViewerFile={setViewerFile} file={file} />
 		)}
 	</section>
 }
