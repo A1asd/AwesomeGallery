@@ -1,3 +1,4 @@
+const { app } = require('electron');
 const path = require("path");
 
 const config = {
@@ -6,7 +7,8 @@ const config = {
 	openDevTools: false,
 
 	preloadDatabase: false,
-	databasePath: path.join(__dirname, 'data/database.sqlite'),
+	databasePath: path.join(app.getPath('userData'), 'database.sqlite'),
+	//databasePath: path.join(__dirname, '../database.sqlite'),
 	testdatabasePath: path.join(__dirname, 'Tests/data/test.database.sqlite'),
 }
 
